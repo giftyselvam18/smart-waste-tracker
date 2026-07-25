@@ -1,4 +1,4 @@
-CREATE DATABASE SmartWasteTracker;
+ CREATE DATABASE SmartWasteTracker;
 GO
 
 USE SmartWasteTracker;
@@ -204,3 +204,7 @@ VALUES
 GO
 
 SELECT * FROM Feedback;
+SELECT name FROM sys.databases;
+
+ALTER TABLE Users
+ADD Role VARCHAR(50) NOT NULL DEFAULT 'User';
