@@ -6,7 +6,6 @@ const PickupRequest = require("./PickupRequest");
 const PickupAssignment = require("./PickupAssignment");
 const Notification = require("./Notification");
 
-
 /* ==========================
    User Relations
 ========================== */
@@ -56,17 +55,6 @@ Notification.belongsTo(User, {
   foreignKey: "UserID",
 });
 
-
-
-// PickupRequest -> Feedback
-PickupRequest.hasOne(Feedback, {
-  foreignKey: "RequestID",
-});
-
-Feedback.belongsTo(PickupRequest, {
-  foreignKey: "RequestID",
-});
-
 module.exports = {
   User,
   Admin,
@@ -75,5 +63,4 @@ module.exports = {
   PickupRequest,
   PickupAssignment,
   Notification,
-  
 };
