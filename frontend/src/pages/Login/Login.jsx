@@ -1,19 +1,43 @@
 import "./Login.css";
 import { useNavigate, useParams, Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+
 function Login() {
   const { role } = useParams();
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [securityCode, setSecurityCode] = useState("");
+
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Frontend மட்டும் - Temporary Navigation
-    if (role === "user") {
-      navigate("/UserDashboard");
-    } else if (role === "collector") {
-      navigate("/CollectorDashboard");
-    } else if (role === "admin") {
-      navigate("/AdminDashboard");
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          username,
+          password,
+          role,
+          securityCode,
+        }
+      );
+
+      const { token, user } = response.data;
+
+      localStorage.setItem("token", token);
+
+      if (user.role === "user") {
+        navigate("/UserDashboard");
+      } else if (user.role === "collector") {
+        navigate("/CollectorDashboard");
+      } else if (user.role === "admin") {
+        navigate("/AdminDashboard");
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "Login Failed");
     }
   };
 
@@ -21,7 +45,6 @@ function Login() {
     <div className="login-page">
       <div className={`login-card ${role}`}>
 
-        {/* User Login */}
         {role === "user" && (
           <>
             <h1>👤 User Login</h1>
@@ -33,12 +56,16 @@ function Login() {
               <input
                 type="text"
                 placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
 
               <input
                 type="password"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
 
@@ -52,7 +79,6 @@ function Login() {
           </>
         )}
 
-        {/* Collector Login */}
         {role === "collector" && (
           <>
             <h1>🚛 Waste Collector Login</h1>
@@ -64,12 +90,16 @@ function Login() {
               <input
                 type="text"
                 placeholder="Employee ID"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
 
               <input
                 type="password"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
 
@@ -78,7 +108,6 @@ function Login() {
           </>
         )}
 
-        {/* Admin Login */}
         {role === "admin" && (
           <>
             <h1>🛡️ Admin Login</h1>
@@ -90,18 +119,24 @@ function Login() {
               <input
                 type="text"
                 placeholder="Admin ID"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
 
               <input
                 type="password"
                 placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
 
               <input
                 type="password"
                 placeholder="Security Code"
+                value={securityCode}
+                onChange={(e) => setSecurityCode(e.target.value)}
                 required
               />
 

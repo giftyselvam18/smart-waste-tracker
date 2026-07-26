@@ -1,22 +1,90 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import FeatureTopBar from "../../components/TopBar/FeatureTopBar";
-import "./UserDashboard.css";
 
 function Notifications() {
+
+  const [notifications, setNotifications] = useState([]);
+
+
+  useEffect(() => {
+
+    const fetchNotifications = async () => {
+
+      try {
+
+        const token = localStorage.getItem("token");
+
+        const response = await axios.get(
+          "http://localhost:5000/api/notifications",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setNotifications(response.data);
+
+      } catch (error) {
+
+        console.log("Notification Error:", error);
+
+      }
+
+    };
+
+
+    fetchNotifications();
+
+  }, []);
+
+
   return (
-        <>
-    <FeatureTopBar dashboardPath="/UserDashboard" />
-    <div className="content">
-      <h2>Notifications</h2>
+    <>
+<FeatureTopBar dashboardPath="/UserDashboard" />
+    <div className="notification-page">
 
-      <div className="notification">
-        ✅ Your pickup request has been accepted.
-      </div>
+      <h2>🔔 Notifications</h2>
 
-      <div className="notification">
-        🚛 Collector is on the way.
-      </div>
+
+      {
+        notifications.length === 0 ? (
+
+          <p>No Notifications Available</p>
+
+        ) : (
+
+          notifications.map((item) => (
+
+            <div 
+              className="notification-card"
+              key={item.NotificationID}
+            >
+
+              <h3>
+                {item.Title}
+              </h3>
+
+              <p>
+                {item.Message}
+              </p>
+
+              <small>
+                {item.CreatedAt}
+              </small>
+
+            </div>
+
+          ))
+
+        )
+      }
+
+
     </div>
     </>
+
   );
 }
 
