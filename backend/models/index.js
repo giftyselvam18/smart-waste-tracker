@@ -5,7 +5,7 @@ const WasteCategory = require("./WasteCategory");
 const PickupRequest = require("./PickupRequest");
 const PickupAssignment = require("./PickupAssignment");
 const Notification = require("./Notification");
-const Feedback = require("./Feedback");
+
 
 /* ==========================
    User Relations
@@ -56,14 +56,7 @@ Notification.belongsTo(User, {
   foreignKey: "UserID",
 });
 
-// User -> Feedback
-User.hasMany(Feedback, {
-  foreignKey: "UserID",
-});
 
-Feedback.belongsTo(User, {
-  foreignKey: "UserID",
-});
 
 // PickupRequest -> Feedback
 PickupRequest.hasOne(Feedback, {
@@ -82,5 +75,5 @@ module.exports = {
   PickupRequest,
   PickupAssignment,
   Notification,
-  Feedback,
+  
 };

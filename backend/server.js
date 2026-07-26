@@ -58,4 +58,10 @@ connectDB()
   })
   .catch((err) => {
     console.error("❌ Server Start Failed:", err);
+
+    if (err.parent?.errors) {
+      err.parent.errors.forEach((e, i) => {
+        console.error(`SQL Error ${i + 1}:`, e.message);
+      });
+    }
   });
