@@ -6,6 +6,7 @@ const {
 } = require("../models");
 
 
+
 // =========================
 // Pickup Request
 // =========================
@@ -13,14 +14,17 @@ const {
 
 // Create Pickup Request
 exports.createPickupRequest = async (req, res) => {
+
   try {
 
     const pickup = await PickupRequest.create(req.body);
+
 
     res.status(201).json({
       message: "Pickup request created successfully",
       pickup,
     });
+
 
   } catch (error) {
 
@@ -29,7 +33,9 @@ exports.createPickupRequest = async (req, res) => {
     });
 
   }
+
 };
+
 
 
 
@@ -38,13 +44,14 @@ exports.getAllPickupRequests = async (req, res) => {
 
   try {
 
+
     const pickups = await PickupRequest.findAll({
 
-      include: [
+      include:[
 
         {
           model: User,
-          attributes: [
+          attributes:[
             "FullName",
             "Username",
             "Phone"
@@ -54,7 +61,7 @@ exports.getAllPickupRequests = async (req, res) => {
 
         {
           model: WasteCategory,
-          attributes: [
+          attributes:[
             "CategoryName"
           ]
         }
@@ -64,60 +71,18 @@ exports.getAllPickupRequests = async (req, res) => {
     });
 
 
+
     res.status(200).json(pickups);
 
-
-  } catch (error) {
-
-    res.status(500).json({
-      message: error.message,
-    });
-
-  }
-
-};
-
-
-
-// Get Pickup Request By ID
-exports.getPickupRequestById = async (req, res) => {
-
-  try {
-
-    const pickup = await PickupRequest.findByPk(
-      req.params.id,
-      {
-        include:[
-          {
-            model:User,
-            attributes:["FullName"]
-          },
-          {
-            model:WasteCategory,
-            attributes:["CategoryName"]
-          }
-        ]
-      }
-    );
-
-
-    if (!pickup) {
-
-      return res.status(404).json({
-        message:"Pickup request not found",
-      });
-
-    }
-
-
-    res.status(200).json(pickup);
 
 
   } catch(error){
 
+
     res.status(500).json({
-      message:error.message,
+      message:error.message
     });
+
 
   }
 
@@ -125,80 +90,192 @@ exports.getPickupRequestById = async (req, res) => {
 
 
 
-// Update Pickup Request
-exports.updatePickupRequest = async (req, res) => {
-
-  try {
-
-    const pickup = await PickupRequest.findByPk(req.params.id);
-
-
-    if(!pickup){
-
-      return res.status(404).json({
-        message:"Pickup request not found",
-      });
-
-    }
-
-
-    await pickup.update(req.body);
-
-
-    res.status(200).json({
-
-      message:"Pickup request updated successfully",
-      pickup,
-
-    });
-
-
-  }catch(error){
-
-    res.status(500).json({
-      message:error.message,
-    });
-
-  }
-
-};
 
 
 
-// Delete Pickup Request
-exports.deletePickupRequest = async (req,res)=>{
+// Get Pickup Request By ID
+exports.getPickupRequestById = async(req,res)=>{
 
 try{
 
-const pickup = await PickupRequest.findByPk(req.params.id);
+
+const pickup = await PickupRequest.findByPk(
+req.params.id,
+{
+
+include:[
+
+{
+model:User,
+attributes:["FullName"]
+},
+
+{
+model:WasteCategory,
+attributes:["CategoryName"]
+}
+
+]
+
+}
+
+);
+
 
 
 if(!pickup){
 
 return res.status(404).json({
+
 message:"Pickup request not found"
+
 });
 
 }
+
+
+
+res.status(200).json(pickup);
+
+
+
+}catch(error){
+
+
+res.status(500).json({
+
+message:error.message
+
+});
+
+
+}
+
+};
+
+
+
+
+
+
+
+
+// Update Pickup Request Status
+exports.updatePickupRequest = async(req,res)=>{
+
+try{
+
+
+const pickup =
+await PickupRequest.findByPk(
+req.params.id
+);
+
+
+
+if(!pickup){
+
+return res.status(404).json({
+
+message:"Pickup request not found"
+
+});
+
+}
+
+
+
+await pickup.update(req.body);
+
+
+
+res.status(200).json({
+
+message:"Pickup request updated successfully",
+
+pickup
+
+});
+
+
+
+}catch(error){
+
+
+res.status(500).json({
+
+message:error.message
+
+});
+
+
+}
+
+};
+
+
+
+
+
+
+
+
+
+// Delete Pickup Request
+exports.deletePickupRequest = async(req,res)=>{
+
+try{
+
+
+const pickup =
+await PickupRequest.findByPk(
+req.params.id
+);
+
+
+
+if(!pickup){
+
+return res.status(404).json({
+
+message:"Pickup request not found"
+
+});
+
+}
+
 
 
 await pickup.destroy();
 
 
+
 res.status(200).json({
+
 message:"Pickup request deleted successfully"
+
 });
+
 
 
 }catch(error){
 
+
 res.status(500).json({
+
 message:error.message
+
 });
+
 
 }
 
 };
+
+
+
+
+
 
 
 
@@ -208,20 +285,34 @@ message:error.message
 // =========================
 
 
+
 // Assign Collector
 exports.assignCollector = async(req,res)=>{
 
 try{
 
-const assignment = await PickupAssignment.create({
 
-RequestID:req.body.RequestID,
+const {
+RequestID,
+CollectorID
+}=req.body;
 
-CollectorID:req.body.CollectorID,
+
+
+const assignment =
+await PickupAssignment.create({
+
+RequestID,
+
+CollectorID,
 
 AssignedDate:new Date(),
 
+Status:"Assigned"
+
 });
+
+
 
 
 
@@ -233,11 +324,13 @@ Status:"Assigned"
 
 {
 where:{
-RequestID:req.body.RequestID
+RequestID:RequestID
 }
 }
 
 );
+
+
 
 
 
@@ -250,7 +343,12 @@ assignment
 });
 
 
+
 }catch(error){
+
+
+console.log(error);
+
 
 res.status(500).json({
 
@@ -258,9 +356,15 @@ message:error.message
 
 });
 
+
 }
 
 };
+
+
+
+
+
 
 
 
@@ -269,21 +373,35 @@ exports.getAllAssignments = async(req,res)=>{
 
 try{
 
-const assignments = await PickupAssignment.findAll();
+
+const assignments =
+await PickupAssignment.findAll();
+
 
 
 res.status(200).json(assignments);
 
 
+
 }catch(error){
 
+
 res.status(500).json({
+
 message:error.message
+
 });
+
 
 }
 
 };
+
+
+
+
+
+
 
 
 
@@ -292,31 +410,49 @@ exports.getAssignmentById = async(req,res)=>{
 
 try{
 
+
 const assignment =
-await PickupAssignment.findByPk(req.params.id);
+await PickupAssignment.findByPk(
+req.params.id
+);
+
 
 
 if(!assignment){
 
 return res.status(404).json({
+
 message:"Assignment not found"
+
 });
 
 }
+
 
 
 res.status(200).json(assignment);
 
 
+
 }catch(error){
 
+
 res.status(500).json({
+
 message:error.message
+
 });
+
 
 }
 
 };
+
+
+
+
+
+
 
 
 
@@ -325,20 +461,28 @@ exports.deleteAssignment = async(req,res)=>{
 
 try{
 
+
 const assignment =
-await PickupAssignment.findByPk(req.params.id);
+await PickupAssignment.findByPk(
+req.params.id
+);
+
 
 
 if(!assignment){
 
 return res.status(404).json({
+
 message:"Assignment not found"
+
 });
 
 }
 
 
+
 await assignment.destroy();
+
 
 
 res.status(200).json({
@@ -348,11 +492,95 @@ message:"Assignment deleted successfully"
 });
 
 
+
 }catch(error){
 
+
 res.status(500).json({
+
 message:error.message
+
 });
+
+
+}
+
+};
+
+
+
+
+
+
+
+
+// =========================
+// Collector Dashboard
+// =========================
+
+
+// Get Collector Assigned Requests
+
+exports.getCollectorRequests = async(req,res)=>{
+
+try{
+
+
+const assignments = await PickupAssignment.findAll({
+
+where:{
+CollectorID:req.params.id
+},
+
+
+include:[
+
+{
+
+model:PickupRequest,
+
+include:[
+
+{
+model:User,
+attributes:[
+"FullName",
+"Phone"
+]
+},
+
+
+{
+model:WasteCategory,
+attributes:[
+"CategoryName"
+]
+}
+
+]
+
+}
+
+]
+
+});
+
+
+
+res.status(200).json(assignments);
+
+
+
+}
+catch(error){
+
+
+res.status(500).json({
+
+message:error.message
+
+});
+
 
 }
 

@@ -1,16 +1,25 @@
+import { useNavigate } from "react-router-dom";
 import "./PickupRequests.css";
 import FeatureTopBar from "../../components/TopBar/FeatureTopBar";
 import { useEffect, useState } from "react";
 import API from "../../services/api";
 
+
 function PickupRequests() {
+
 
   const [requests, setRequests] = useState([]);
 
+  const navigate = useNavigate();
+
+
 
   useEffect(() => {
+
     fetchRequests();
+
   }, []);
+
 
 
 
@@ -37,9 +46,13 @@ function PickupRequests() {
 
 
 
+
+
   const updateStatus = async(id,status)=>{
 
+
     try{
+
 
       await API.put(
         `/pickups/request/${id}`,
@@ -48,9 +61,12 @@ function PickupRequests() {
         }
       );
 
+
       alert(`Request ${status}`);
 
+
       fetchRequests();
+
 
 
     }catch(error){
@@ -59,7 +75,55 @@ function PickupRequests() {
 
     }
 
+
   };
+
+
+
+
+
+
+  const acceptRequest = async(id)=>{
+
+
+    try{
+
+
+      // Update status as Accepted
+
+      await API.put(
+        `/pickups/request/${id}`,
+        {
+          Status:"Accepted"
+        }
+      );
+
+
+
+      alert("Request Accepted");
+
+
+
+      // Go to Assign Collector page
+
+      navigate(`/admin/assign/${id}`);
+
+
+
+    }
+    catch(error){
+
+      console.log(error);
+
+      alert("Failed to accept request");
+
+    }
+
+
+  };
+
+
+
 
 
 
@@ -70,10 +134,14 @@ return (
 <FeatureTopBar dashboardPath="/AdminDashboard" />
 
 
+
 <div className="pickup-container">
 
 
-<h1>🗑 Pickup Requests</h1>
+<h1>
+🗑 Pickup Requests
+</h1>
+
 
 
 
@@ -81,6 +149,7 @@ return (
 
 
 <thead>
+
 
 <tr>
 
@@ -107,7 +176,10 @@ return (
 
 </tr>
 
+
 </thead>
+
+
 
 
 
@@ -115,7 +187,9 @@ return (
 
 
 {
-requests.length > 0 ? (
+
+requests.length > 0 ?
+
 
 requests.map((request)=>(
 
@@ -130,19 +204,25 @@ requests.map((request)=>(
 
 
 <td>
-{request.User?.FullName}
+{
+request.User?.FullName || "User"
+}
 </td>
 
 
 
 <td>
-{request.WasteCategory?.CategoryName}
+{
+request.WasteCategory?.CategoryName || "Waste"
+}
 </td>
 
 
 
 <td>
-{request.Weight} Kg
+{
+request.Weight || "-"
+} Kg
 </td>
 
 
@@ -165,31 +245,46 @@ requests.map((request)=>(
 
 
 
+
 <td>
 
 
 {
-request.WasteImage ? (
+
+request.WasteImage ?
+
+
+(
 
 <img
+
 src={`http://localhost:5000/uploads/${request.WasteImage}`}
+
 alt="waste"
+
 width="80"
+
 height="80"
+
 />
+
 
 )
 
+
 :
+
 
 (
 "No Image"
 )
 
+
 }
 
 
 </td>
+
 
 
 
@@ -199,30 +294,53 @@ height="80"
 
 
 
+
+
 <td>
 
 
+
+{
+
+request.Status === "Pending" &&
+
+
 <button
+
 className="accept-btn"
-onClick={()=>updateStatus(
-request.RequestID,
-"Accepted"
+
+onClick={()=>acceptRequest(
+request.RequestID
 )}
+
 >
+
 Accept
+
 </button>
 
 
+}
+
+
+
 
 <button
+
 className="reject-btn"
+
 onClick={()=>updateStatus(
 request.RequestID,
 "Rejected"
 )}
+
 >
+
 Reject
+
 </button>
+
+
 
 
 </td>
@@ -234,23 +352,22 @@ Reject
 ))
 
 
-)
-
 :
 
-(
 
 <tr>
 
 <td colSpan="10">
+
 No Pickup Requests Found
+
 </td>
 
 </tr>
 
-)
 
 }
+
 
 
 </tbody>
@@ -264,7 +381,8 @@ No Pickup Requests Found
 
 </>
 
-)
+);
+
 
 }
 
