@@ -22,12 +22,12 @@ const PickupAssignment = sequelize.define(
 
     AssignedDate: {
       type: DataTypes.DATE,
-<<<<<<< HEAD
+
       allowNull: true,
       field: "AssignedDate",
-=======
+
       defaultValue: DataTypes.NOW,
->>>>>>> 693b0d7 (Added today collection and collector profile features)
+
     },
 
     Status: {
