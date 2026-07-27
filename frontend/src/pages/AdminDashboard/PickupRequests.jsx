@@ -29,12 +29,10 @@ function PickupRequests() {
 
       const response = await API.get("/pickups/request");
 
-      console.log(response.data);
-
       setRequests(response.data);
 
 
-    } catch(error){
+    } catch(error) {
 
       console.error(error);
 
@@ -49,7 +47,6 @@ function PickupRequests() {
 
 
   const updateStatus = async(id,status)=>{
-
 
     try{
 
@@ -68,16 +65,14 @@ function PickupRequests() {
       fetchRequests();
 
 
-
-    }catch(error){
+    }
+    catch(error){
 
       console.log(error);
 
     }
 
-
   };
-
 
 
 
@@ -88,8 +83,6 @@ function PickupRequests() {
 
     try{
 
-
-      // Update status as Accepted
 
       await API.put(
         `/pickups/request/${id}`,
@@ -103,8 +96,6 @@ function PickupRequests() {
       alert("Request Accepted");
 
 
-
-      // Go to Assign Collector page
 
       navigate(`/admin/assign/${id}`);
 
@@ -126,7 +117,6 @@ function PickupRequests() {
 
 
 
-
 return (
 
 <>
@@ -138,9 +128,11 @@ return (
 <div className="pickup-container">
 
 
+
 <h1>
 🗑 Pickup Requests
 </h1>
+
 
 
 
@@ -150,7 +142,6 @@ return (
 
 <thead>
 
-
 <tr>
 
 <th>ID</th>
@@ -159,7 +150,7 @@ return (
 
 <th>Waste Type</th>
 
-<th>Weight (Kg)</th>
+<th>Weight</th>
 
 <th>Address</th>
 
@@ -175,7 +166,6 @@ return (
 
 
 </tr>
-
 
 </thead>
 
@@ -228,19 +218,25 @@ request.Weight || "-"
 
 
 <td>
-{request.PickupAddress}
+{
+request.PickupAddress
+}
 </td>
 
 
 
 <td>
-{request.PickupDate}
+{
+request.PickupDate
+}
 </td>
 
 
 
 <td>
-{request.PickupTime}
+{
+request.PickupTime
+}
 </td>
 
 
@@ -253,8 +249,6 @@ request.Weight || "-"
 
 request.WasteImage ?
 
-
-(
 
 <img
 
@@ -269,15 +263,9 @@ height="80"
 />
 
 
-)
-
-
 :
 
-
-(
 "No Image"
-)
 
 
 }
@@ -289,9 +277,10 @@ height="80"
 
 
 <td>
-{request.Status}
+{
+request.Status
+}
 </td>
-
 
 
 
@@ -303,7 +292,6 @@ height="80"
 {
 
 request.Status === "Pending" &&
-
 
 <button
 
@@ -344,6 +332,7 @@ Reject
 
 
 </td>
+
 
 
 </tr>

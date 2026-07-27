@@ -199,6 +199,12 @@ function Login() {
           <button type="submit">
             Login
           </button>
+          <p className="register-link">
+  Don't have an account?{" "}
+  <span onClick={() => navigate("/register")}>
+    Register
+  </span>
+</p>
 
 
         </form>
