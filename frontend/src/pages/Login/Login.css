@@ -1,166 +1,86 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-.login-page {
+.login-container {
   width: 100%;
   min-height: 100vh;
+  background: linear-gradient(135deg, #dff6e4, #b8f1cc);
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f4f7f9;
   padding: 20px;
 }
 
-/* Login Card */
-
 .login-card {
-  width: 420px;
-  padding: 40px;
-  border-radius: 20px;
-  background: white;
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  padding: 35px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.login-card h2 {
   text-align: center;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-  transition: 0.3s;
+  color: #1b5e20;
+  margin-bottom: 25px;
+  font-size: 30px;
+  letter-spacing: 1px;
 }
 
-.login-card:hover {
-  transform: translateY(-6px);
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
-
-.login-card h1 {
-  font-size: 34px;
-  margin-bottom: 10px;
-}
-
-.subtitle {
-  color: #555;
-  margin-bottom: 30px;
-  line-height: 1.5;
-}
-
-/* Input */
 
 .login-card input {
   width: 100%;
   padding: 14px;
-  margin-bottom: 18px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 16px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  font-size: 15px;
   outline: none;
   transition: 0.3s;
+  box-sizing: border-box;
 }
 
 .login-card input:focus {
-  border-color: #4caf50;
+  border-color: #2e7d32;
+  box-shadow: 0 0 5px rgba(46, 125, 50, 0.3);
 }
-
-/* Button */
 
 .login-card button {
   width: 100%;
   padding: 14px;
+  background: #2e7d32;
+  color: #ffffff;
   border: none;
-  border-radius: 10px;
-  font-size: 18px;
+  border-radius: 8px;
+  font-size: 17px;
   font-weight: bold;
   cursor: pointer;
-  transition: .3s;
-  color: white;
+  transition: 0.3s;
 }
 
-/* Register */
-
-.register-text {
-  margin-top: 20px;
-}
-
-.register-text a {
-  text-decoration: none;
-  font-weight: bold;
-}
-
-/* ===========================
-        USER THEME
-=========================== */
-
-.login-card.user {
-  border-top: 8px solid #2e7d32;
-}
-
-.login-card.user h1 {
-  color: #2e7d32;
-}
-
-.login-card.user button {
-  background: #2e7d32;
-}
-
-.login-card.user button:hover {
+.login-card button:hover {
   background: #1b5e20;
+  transform: translateY(-2px);
 }
 
-.login-card.user input:focus {
-  border-color: #2e7d32;
+.login-card button:active {
+  transform: scale(0.98);
 }
 
-.login-card.user .register-text a {
-  color: #2e7d32;
-}
+@media (max-width: 500px) {
+  .login-card {
+    padding: 25px;
+  }
 
-/* ===========================
-     COLLECTOR THEME
-=========================== */
+  .login-card h2 {
+    font-size: 24px;
+  }
 
-.login-card.collector {
-  border-top: 8px solid #ef6c00;
-}
-
-.login-card.collector h1 {
-  color: #ef6c00;
-}
-
-.login-card.collector button {
-  background: #ef6c00;
-}
-
-.login-card.collector button:hover {
-  background: #d84315;
-}
-
-.login-card.collector input:focus {
-  border-color: #ef6c00;
-}
-
-/* ===========================
-        ADMIN THEME
-=========================== */
-
-.login-card.admin {
-  border-top: 8px solid #0d47a1;
-}
-
-.login-card.admin h1 {
-  color: #0d47a1;
-}
-
-.login-card.admin button {
-  background: #0d47a1;
-}
-
-.login-card.admin button:hover {
-  background: #08306b;
-}
-
-.login-card.admin input:focus {
-  border-color: #0d47a1;
-}
-
-.warning {
-  color: red;
-  font-weight: bold;
-  margin-bottom: 25px;
+  .login-card input,
+  .login-card button {
+    font-size: 14px;
+    padding: 12px;
+  }
 }

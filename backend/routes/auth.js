@@ -8,19 +8,13 @@ const User = require("../models/User");
 const Admin = require("../models/Admin");
 const Collector = require("../models/Collector");
 
-/* ==========================
-   User Signup
-========================== */
-router.post("/signup", async (req, res) => {
+/* =====================================
+   USER REGISTER
+===================================== */
+
+router.post("/register", async (req, res) => {
   try {
-    const {
-      name,
-      username,
-      email,
-      password,
-      phone,
-      address,
-    } = req.body;
+    const { name, username, email, password, phone, address } = req.body;
 
     if (!name || !username || !email || !password) {
       return res.status(400).json({
@@ -53,32 +47,38 @@ router.post("/signup", async (req, res) => {
     const user = await User.create({
       FullName: name,
       Username: username,
+      Email: email,
       Password: hashedPassword,
       Phone: phone,
-      Email: email,
       Address: address,
     });
 
-    res.status(201).json({
-      message: "User registered successfully.",
+    return res.status(201).json({
+      success: true,
+      message: "Registration Successful",
       userId: user.UserID,
     });
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({
+    return res.status(500).json({
+      success: false,
       message: err.message,
     });
   }
 });
-
 /* ==========================
    User Login
 ========================== */
 router.post("/login", async (req, res) => {
   try {
-
     const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({
+        message: "Username and Password are required.",
+      });
+    }
 
     const user = await User.findOne({
       where: { Username: username },
@@ -109,8 +109,9 @@ router.post("/login", async (req, res) => {
       }
     );
 
-    res.json({
-      message: "User login successful.",
+    res.status(200).json({
+      success: true,
+      message: "Login Successful",
       token,
       role: "user",
       userId: user.UserID,
@@ -124,22 +125,78 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({
+      success: false,
       message: err.message,
     });
   }
 });
+/* ==========================
+   Collector Login
+========================== */
+router.post("/collector/login", async (req, res) => {
+  try {
+    const { collectorCode, password } = req.body;
 
+    if (!collectorCode || !password) {
+      return res.status(400).json({
+        message: "Collector Code and Password are required.",
+      });
+    }
+
+    const collector = await Collector.findOne({
+      where: {
+        CollectorCode: collectorCode,
+      },
+    });
+
+    if (!collector) {
+      return res.status(404).json({
+        message: "Collector not found.",
+      });
+    }
+
+    // Plain password check
+    if (collector.Password !== password) {
+      return res.status(401).json({
+        message: "Invalid password.",
+      });
+    }
+
+    const token = jwt.sign(
+      {
+        id: collector.CollectorID,
+        role: "collector",
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Collector Login Successful",
+      token,
+      role: "collector",
+      collectorId: collector.CollectorID,
+      collectorName: collector.CollectorName,
+      collectorCode: collector.CollectorCode,
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
 /* ==========================
    Admin Login
 ========================== */
 router.post("/admin/login", async (req, res) => {
   try {
-
-    const {
-      username,
-      password,
-      securityCode,
-    } = req.body;
+    const { username, password, securityCode } = req.body;
 
     const admin = await Admin.findOne({
       where: {
@@ -177,7 +234,8 @@ router.post("/admin/login", async (req, res) => {
     );
 
     res.json({
-      message: "Admin login successful.",
+      success: true,
+      message: "Admin Login Successful",
       token,
       role: "admin",
       adminId: admin.AdminID,
@@ -187,66 +245,9 @@ router.post("/admin/login", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({
+      success: false,
       message: err.message,
     });
   }
 });
-
-/* ==========================
-   Collector Login
-========================== */
-router.post("/collector/login", async (req, res) => {
-  try {
-
-    const {
-      collectorCode,
-      password,
-    } = req.body;
-
-    const collector = await Collector.findOne({
-      where: {
-        CollectorCode: collectorCode,
-      },
-    });
-
-    if (!collector) {
-      return res.status(404).json({
-        message: "Collector not found.",
-      });
-    }
-
-    if (collector.Password !== password) {
-      return res.status(401).json({
-        message: "Invalid password.",
-      });
-    }
-
-    const token = jwt.sign(
-      {
-        id: collector.CollectorID,
-        role: "collector",
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "7d",
-      }
-    );
-
-    res.json({
-      message: "Collector login successful.",
-      token,
-      role: "collector",
-      collectorId: collector.CollectorID,
-      collectorName: collector.CollectorName,
-      collectorCode: collector.CollectorCode,
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      message: err.message,
-    });
-  }
-});
-
 module.exports = router;

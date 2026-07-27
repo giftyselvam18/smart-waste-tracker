@@ -1,0 +1,253 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.pickup-page {
+  min-height: 100vh;
+  background: #f3faf5;
+  padding: 35px;
+}
+
+.pickup-card {
+  display: flex;
+  gap: 35px;
+  width: 200%;          /* Box smaller */
+  max-width: 1200px;   /* Maximum width */
+  margin: 0 auto;      /* Center */
+  background: #fff;
+  border-radius: 25px;
+  padding: 30px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.pickup-form-section {
+  flex: 2;
+}
+
+.pickup-info {
+  flex: 1;
+  background: #f7fff8;
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid #22c55e;
+  display: flex;
+  flex-direction: column;
+}
+
+.pickup-info img {
+  width: 100%;
+  height: 300px;
+  object-fit: contain;
+    display: block;
+  border-radius: 18px;
+  margin-bottom: 20px;
+}
+.pickup-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.pickup-icon {
+  width: 75px;
+  height: 75px;
+  border-radius: 18px;
+  background: #e9f8ec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1b8d43;
+  font-size: 30px;
+}
+
+.pickup-header h2 {
+  color: #1f2937;
+  font-size: 32px;
+}
+
+.pickup-header p {
+  color: #666;
+  margin-top: 6px;
+}
+
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.row {
+  display: flex;
+  gap: 20px;
+}
+
+.row .form-group {
+  flex: 1;
+}
+
+.input-box,
+.textarea-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #d6d6d6;
+  border-radius: 12px;
+  background: #fff;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+.input-box:hover,
+.textarea-box:hover {
+  border-color: #2db84d;
+}
+
+.input-box:focus-within,
+.textarea-box:focus-within {
+  border-color: #16a34a;
+  box-shadow: 0 0 8px rgba(22, 163, 74, 0.2);
+}
+
+.input-box svg,
+.textarea-box svg {
+  color: #22c55e;
+  font-size: 18px;
+}
+
+.input-box input,
+.input-box select {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  background: transparent;
+}
+
+.textarea-box {
+  align-items: flex-start;
+}
+
+.textarea-box textarea {
+  width: 100%;
+  border: none;
+  resize: none;
+  outline: none;
+  font-size: 15px;
+  background: transparent;
+}
+
+.upload-box {
+  border: 2px dashed #c8c8c8;
+  border-radius: 15px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: .3s;
+}
+
+.upload-box:hover {
+  border-color: #16a34a;
+  background: #f6fff8;
+}
+
+.upload-box svg {
+  color: #16a34a;
+  font-size: 22px;
+}
+
+.upload-box input {
+  width: 100%;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 18px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(90deg, #0f9d58, #34c759);
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: .3s;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(15, 157, 88, .3);
+}
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 2px solid #22c55e;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: 0.3s ease;
+}
+
+.info-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.15);
+}
+
+.info-item svg {
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  background: #22c55e;
+  color: white;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.info-item h4 {
+  font-size: 15px;
+  margin-bottom: 3px;
+  color: #1f2937;
+}
+
+.info-item p {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
+}
+@media(max-width:1000px){
+
+  .pickup-card{
+    flex-direction:column;
+  }
+
+  .row{
+    flex-direction:column;
+    gap:0;
+  }
+
+  .pickup-page{
+    padding:20px;
+  }
+
+}
