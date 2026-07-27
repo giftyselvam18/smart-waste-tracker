@@ -1,154 +1,198 @@
-import { useState } from "react";
-import FeatureTopBar from "../../components/TopBar/FeatureTopBar";
+import "./RequestPickup.css";
+import {
+  FaRecycle,
+  FaWeightHanging,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaClock,
+  FaStickyNote,
+  FaUpload,
+  FaPaperPlane,
+  FaLeaf,
+  FaTruck,
+  FaCheckCircle,
+} from "react-icons/fa";
+
+import pickupImg from "../../assets/pickup.png"; // Add your illustration
 
 function RequestPickup() {
-  const [formData, setFormData] = useState({
-    wasteType: "",
-    weight: "",
-    pickupDate: "",
-    pickupTime: "",
-    address: "",
-    notes: "",
-    image: null,
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleImageChange = (e) => {
-    setFormData({
-      ...formData,
-      image: e.target.files[0],
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    console.log(formData);
-    alert("Pickup Request Submitted Successfully!");
-  };
-
   return (
-<>
-<FeatureTopBar dashboardPath="/UserDashboard" />
+    <div className="pickup-page">
 
-    <div style={{ padding: "30px", maxWidth: "600px", margin: "auto" }}>
-      <h2>🗑 Waste Pickup Request</h2>
+      <div className="pickup-card">
 
-      <form onSubmit={handleSubmit}>
+        {/* LEFT SIDE */}
 
-        <label>Waste Type</label>
-        <br />
-        <select
-          name="wasteType"
-          value={formData.wasteType}
-          onChange={handleChange}
-          required
-          style={{ width: "100%", padding: "10px", marginBottom: "15px" }}
-        >
-          <option value="">Select Waste Type</option>
-          <option value="Plastic">Plastic</option>
-          <option value="Paper">Paper</option>
-          <option value="Metal">Metal</option>
-          <option value="E-Waste">E-Waste</option>
-          <option value="Organic">Organic</option>
-        </select>
+        <div className="pickup-form-section">
 
-        <label>Weight (kg)</label>
-        <br />
-        <input
-          type="number"
-          name="weight"
-          placeholder="Enter Weight"
-          value={formData.weight}
-          onChange={handleChange}
-          required
-          style={{ width: "100%", padding: "10px", marginBottom: "15px" }}
-        />
+          <div className="pickup-header">
+            <div className="pickup-icon">
+              <FaTruck />
+            </div>
 
-        <label>Pickup Date</label>
-        <br />
-        <input
-          type="date"
-          name="pickupDate"
-          value={formData.pickupDate}
-          onChange={handleChange}
-          required
-          style={{ width: "100%", padding: "10px", marginBottom: "15px" }}
-        />
+            <div>
+              <h2>Request Waste Pickup</h2>
+              <p>
+                Fill in the details below to schedule your waste pickup.
+              </p>
+            </div>
+          </div>
 
-        <label>Pickup Time</label>
-        <br />
-        <input
-          type="time"
-          name="pickupTime"
-          value={formData.pickupTime}
-          onChange={handleChange}
-          required
-          style={{ width: "100%", padding: "10px", marginBottom: "15px" }}
-        />
+          <form>
 
-        <label>Pickup Address</label>
-        <br />
-        <textarea
-          name="address"
-          rows="3"
-          placeholder="Enter Pickup Address"
-          value={formData.address}
-          onChange={handleChange}
-          required
-          style={{ width: "100%", padding: "10px", marginBottom: "15px" }}
-        />
+            <div className="form-group">
+              <label>Waste Type</label>
 
-        <label>Additional Notes</label>
-        <br />
-        <textarea
-          name="notes"
-          rows="3"
-          placeholder="Any special instructions..."
-          value={formData.notes}
-          onChange={handleChange}
-          style={{ width: "100%", padding: "10px", marginBottom: "15px" }}
-        />
+              <div className="input-box">
+                <FaRecycle />
+                <select>
+                  <option>Select Waste Type</option>
+                  <option>Plastic</option>
+                  <option>Paper</option>
+                  <option>Metal</option>
+                  <option>Glass</option>
+                  <option>Organic</option>
+                  <option>E-Waste</option>
+                </select>
+              </div>
+            </div>
 
-        <label>Upload Waste Image (Optional)</label>
-        <br />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          style={{ marginBottom: "20px" }}
-        />
+            <div className="row">
 
-        {formData.image && (
-          <p>
-            <strong>Selected Image:</strong> {formData.image.name}
-          </p>
-        )}
+              <div className="form-group">
+                <label>Weight (kg)</label>
 
-        <button
-          type="submit"
-          style={{
-            width: "100%",
-            padding: "12px",
-            background: "green",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-          }}
-        >
-          Submit Request
-        </button>
+                <div className="input-box">
+                  <FaWeightHanging />
+                  <input
+                    type="number"
+                    placeholder="Enter Weight"
+                  />
+                </div>
+              </div>
 
-      </form>
+              <div className="form-group">
+                <label>Pickup Date</label>
+
+                <div className="input-box">
+                  <FaCalendarAlt />
+                  <input type="date" />
+                </div>
+              </div>
+
+            </div>
+
+            <div className="row">
+
+              <div className="form-group">
+                <label>Pickup Time</label>
+
+                <div className="input-box">
+                  <FaClock />
+                  <input type="time" />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Pickup Address</label>
+
+                <div className="input-box">
+                  <FaMapMarkerAlt />
+                  <input
+                    type="text"
+                    placeholder="Enter Pickup Address"
+                  />
+                </div>
+              </div>
+
+            </div>
+
+            <div className="form-group">
+              <label>Additional Notes</label>
+
+              <div className="textarea-box">
+
+                <FaStickyNote />
+
+                <textarea
+                  rows="4"
+                  placeholder="Any special instructions..."
+                ></textarea>
+
+              </div>
+            </div>
+
+            <div className="form-group">
+
+              <label>Upload Waste Image</label>
+
+              <div className="upload-box">
+                <FaUpload />
+                <input type="file" />
+              </div>
+
+            </div>
+
+            <button className="submit-btn">
+
+              <FaPaperPlane />
+
+              Submit Pickup Request
+
+            </button>
+
+          </form>
+
+        </div>
+
+        {/* RIGHT SIDE */}
+
+        <div className="pickup-info">
+
+          <img
+            src={pickupImg}
+            alt="pickup"
+          />
+
+          <div className="info-card">
+
+            <div className="info-item">
+              <FaLeaf />
+              <div>
+                <h4>Eco Friendly</h4>
+                <p>
+                  Safe and sustainable waste collection.
+                </p>
+              </div>
+            </div>
+
+            <div className="info-item">
+              <FaTruck />
+              <div>
+                <h4>Reliable Service</h4>
+                <p>
+                  Fast pickup by verified collectors.
+                </p>
+              </div>
+            </div>
+
+            <div className="info-item">
+              <FaCheckCircle />
+              <div>
+                <h4>Clean City</h4>
+                <p>
+                  Together we build a greener tomorrow.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
-    </>
   );
 }
 

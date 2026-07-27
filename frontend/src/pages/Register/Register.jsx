@@ -20,16 +20,16 @@ function Register() {
       const response = await axios.post(
         "http://localhost:5000/api/auth/register",
         {
-          fullName,
-          username,
-          phone,
-          email,
-          address,
-          password,
+          name: fullName,
+          username: username,
+          email: email,
+          password: password,
+          phone: phone,
+          address: address,
         }
       );
 
-      alert(response.data.message || "Registration Successful");
+      alert(response.data.message);
       navigate("/login/user");
     } catch (error) {
       alert(error.response?.data?.message || "Registration Failed");
@@ -39,7 +39,6 @@ function Register() {
   return (
     <div className="register-container">
       <div className="register-card">
-
         <h2>Create Account</h2>
         <p>Register to Smart Waste Tracker</p>
 
@@ -66,7 +65,6 @@ function Register() {
             placeholder="Phone Number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            required
           />
 
           <input
@@ -82,7 +80,6 @@ function Register() {
             placeholder="Address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            required
           />
 
           <input

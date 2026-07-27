@@ -1,149 +1,126 @@
 import "./Login.css";
-import { useNavigate, useParams, Link } from "react-router-dom";
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 function Login() {
-  const { role } = useParams();
   const navigate = useNavigate();
+  const { role } = useParams();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [securityCode, setSecurityCode] = useState("");
+  const [collectorCode, setCollectorCode] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          username,
-          password,
-          role,
-          securityCode,
-        }
-      );
+      let response;
 
-      const { token, user } = response.data;
+      if (role === "user") {
+        response = await axios.post(
+          "http://localhost:5000/api/auth/login",
+          {
+            username,
+            password,
+          }
+        );
 
-      localStorage.setItem("token", token);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", "user");
 
-      if (user.role === "user") {
+        alert("User Login Successful");
         navigate("/UserDashboard");
-      } else if (user.role === "collector") {
-        navigate("/CollectorDashboard");
-      } else if (user.role === "admin") {
+      }
+
+      else if (role === "admin") {
+        response = await axios.post(
+          "http://localhost:5000/api/auth/admin/login",
+          {
+            username,
+            password,
+            securityCode,
+          }
+        );
+
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", "admin");
+
+        alert("Admin Login Successful");
         navigate("/AdminDashboard");
       }
+
+      else if (role === "collector") {
+        response = await axios.post(
+          "http://localhost:5000/api/auth/collector/login",
+          {
+            collectorCode,
+            password,
+          }
+        );
+
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", "collector");
+
+        alert("Collector Login Successful");
+        navigate("/CollectorDashboard");
+      }
+
     } catch (error) {
       alert(error.response?.data?.message || "Login Failed");
     }
   };
 
   return (
-    <div className="login-page">
-      <div className={`login-card ${role}`}>
+    <div className="login-container">
+      <div className="login-card">
 
-        {role === "user" && (
-          <>
-            <h1>👤 User Login</h1>
-            <p className="subtitle">
-              Login to report waste and track your requests.
-            </p>
+        <h2>{role?.toUpperCase()} LOGIN</h2>
 
-            <form onSubmit={handleLogin}>
-              <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
+        <form onSubmit={handleLogin}>
 
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+          {role === "collector" ? (
+            <input
+              type="text"
+              placeholder="Collector Code"
+              value={collectorCode}
+              onChange={(e) => setCollectorCode(e.target.value)}
+              required
+            />
+          ) : (
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          )}
 
-              <button type="submit">Login</button>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
 
-              <p className="register-text">
-                Don't have an account?{" "}
-                <Link to="/register">Register</Link>
-              </p>
-            </form>
-          </>
-        )}
+          {role === "admin" && (
+            <input
+              type="text"
+              placeholder="Security Code"
+              value={securityCode}
+              onChange={(e) => setSecurityCode(e.target.value)}
+              required
+            />
+          )}
 
-        {role === "collector" && (
-          <>
-            <h1>🚛 Waste Collector Login</h1>
-            <p className="subtitle">
-              Login to manage waste collection activities.
-            </p>
+          <button type="submit">
+            Login
+          </button>
 
-            <form onSubmit={handleLogin}>
-              <input
-                type="text"
-                placeholder="Employee ID"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-
-              <button type="submit">Login</button>
-            </form>
-          </>
-        )}
-
-        {role === "admin" && (
-          <>
-            <h1>🛡️ Admin Login</h1>
-            <p className="subtitle warning">
-              Authorized Personnel Only
-            </p>
-
-            <form onSubmit={handleLogin}>
-              <input
-                type="text"
-                placeholder="Admin ID"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-
-              <input
-                type="password"
-                placeholder="Security Code"
-                value={securityCode}
-                onChange={(e) => setSecurityCode(e.target.value)}
-                required
-              />
-
-              <button type="submit">Secure Login</button>
-            </form>
-          </>
-        )}
+        </form>
 
       </div>
     </div>
