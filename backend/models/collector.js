@@ -40,6 +40,12 @@ const Collector = sequelize.define(
       field: "VehicleNumber",
     },
 
+    Area: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "Area",
+    },
+
     Status: {
       type: DataTypes.STRING,
       defaultValue: "Available",

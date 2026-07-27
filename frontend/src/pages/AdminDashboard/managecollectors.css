@@ -1,0 +1,51 @@
+.manage-container{
+    padding:20px;
+}
+
+.manage-container h1{
+    margin-bottom:20px;
+}
+
+.collector-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.collector-table th,
+.collector-table td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+
+.collector-table th{
+    background:#2c7be5;
+    color:white;
+}
+
+.edit-btn{
+    background:#28a745;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    margin-right:8px;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+.delete-btn{
+    background:#dc3545;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+.edit-btn:hover{
+    background:#218838;
+}
+
+.delete-btn:hover{
+    background:#c82333;
+}

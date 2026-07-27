@@ -1,114 +1,246 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import FeatureTopBar from "../../components/TopBar/FeatureTopBar";
+import API from "../../services/api";
 import "./PickupRequests.css";
 
+
 function PickupRequests() {
+
   const [requests, setRequests] = useState([]);
 
+
   useEffect(() => {
-    loadPickups();
+    fetchRequests();
   }, []);
 
-  const loadPickups = async () => {
+
+
+  const fetchRequests = async () => {
+
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/pickups/request"
-      );
-      setRequests(res.data);
-    } catch (error) {
-      console.error("Error loading pickups:", error);
+
+      const response = await API.get("/pickups/request");
+
+      setRequests(response.data);
+
+    } catch(error) {
+
+      console.error(error);
+
+      alert("Failed to fetch pickup requests");
+
     }
+
   };
 
-  const handleAccept = async (id) => {
-    try {
-      await axios.put(
-        `http://localhost:5000/api/pickups/request/${id}`,
+
+
+  const updateStatus = async (id,status)=>{
+
+    try{
+
+      await API.put(
+        `/pickups/request/${id}`,
         {
-          status: "Accepted",
+          Status: status
         }
       );
 
-      loadPickups();
-    } catch (error) {
-      console.error("Accept Error:", error);
+
+      alert(`Request ${status}`);
+
+
+      fetchRequests();
+
+
+    }catch(error){
+
+      console.log(error);
+
     }
+
   };
 
-  const handleReject = async (id) => {
-    try {
-      await axios.put(
-        `http://localhost:5000/api/pickups/request/${id}`,
-        {
-          status: "Rejected",
-        }
-      );
 
-      loadPickups();
-    } catch (error) {
-      console.error("Reject Error:", error);
-    }
-  };
 
   return (
-  <>
+
+    <>
+
       <FeatureTopBar dashboardPath="/AdminDashboard" />
 
+
       <div className="pickup-container">
+
+
         <h1>🗑 Pickup Requests</h1>
 
-        {requests.length === 0 ? (
-          <h3>No Pickup Requests Found</h3>
-        ) : (
-          requests.map((request) => (
-            <div className="pickup-card" key={request.RequestID || request._id}>
-              <h2>👤 {request.userName || request.UserName}</h2>
 
-              <p>
-                ♻ Waste Type: <b>{request.wasteType || request.WasteType}</b>
-              </p>
 
-              <p>
-                ⚖ Weight: <b>{request.weight || request.Weight} Kg</b>
-              </p>
+        <table className="pickup-table">
 
-              <p>
-                📅 Date: {request.pickupDate || request.PickupDate}
-              </p>
 
-              <p>
-                📍 Address: {request.pickupAddress || request.PickupAddress}
-              </p>
+          <thead>
 
-              <p>
-                Status:{" "}
-                <span>{request.status || request.Status}</span>
-              </p>
+            <tr>
 
-              <div className="button-group">
-                <button
-                  onClick={() =>
-                    handleAccept(request.RequestID || request._id)
-                  }
-                >
-                  Accept
-                </button>
+              <th>ID</th>
+              <th>User</th>
+              <th>Waste Type</th>
+              <th>Weight</th>
+              <th>Address</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Image</th>
+              <th>Status</th>
+              <th>Action</th>
 
-                <button
-                  onClick={() =>
-                    handleReject(request.RequestID || request._id)
-                  }
-                >
-                  Reject
-                </button>
-              </div>
-            </div>
-          ))
-        )}
+            </tr>
+
+          </thead>
+
+
+
+          <tbody>
+
+
+          {
+            requests.length > 0 ? (
+
+              requests.map((request)=>(
+
+
+                <tr key={request.RequestID}>
+
+
+                  <td>
+                    {request.RequestID}
+                  </td>
+
+
+                  <td>
+                    {request.User?.FullName || "User"}
+                  </td>
+
+
+                  <td>
+                    {request.WasteCategory?.CategoryName || request.WasteType}
+                  </td>
+
+
+                  <td>
+                    {request.Weight} Kg
+                  </td>
+
+
+                  <td>
+                    {request.PickupAddress}
+                  </td>
+
+
+                  <td>
+                    {request.PickupDate}
+                  </td>
+
+
+                  <td>
+                    {request.PickupTime}
+                  </td>
+
+
+                  <td>
+
+                    {
+                      request.WasteImage ?
+
+                      <img
+                        src={`http://localhost:5000/uploads/${request.WasteImage}`}
+                        alt="waste"
+                        width="70"
+                        height="70"
+                      />
+
+                      :
+
+                      "No Image"
+
+                    }
+
+                  </td>
+
+
+                  <td>
+                    {request.Status}
+                  </td>
+
+
+                  <td>
+
+
+                    <button
+                      className="accept-btn"
+                      onClick={()=>updateStatus(
+                        request.RequestID,
+                        "Accepted"
+                      )}
+                    >
+                      Accept
+                    </button>
+
+
+
+                    <button
+                      className="reject-btn"
+                      onClick={()=>updateStatus(
+                        request.RequestID,
+                        "Rejected"
+                      )}
+                    >
+                      Reject
+                    </button>
+
+
+                  </td>
+
+
+                </tr>
+
+
+              ))
+
+            )
+
+            :
+
+            (
+
+              <tr>
+
+                <td colSpan="10">
+                  No Pickup Requests Found
+                </td>
+
+              </tr>
+
+            )
+
+          }
+
+
+          </tbody>
+
+
+        </table>
+
+
       </div>
+
+
     </>
+
   );
+
 }
+
 
 export default PickupRequests;
