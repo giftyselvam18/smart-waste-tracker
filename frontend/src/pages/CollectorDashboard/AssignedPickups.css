@@ -1,0 +1,115 @@
+.assigned-container {
+    padding: 30px;
+    background: #f5f9f5;
+    min-height: 100vh;
+}
+
+.assigned-container h1 {
+    text-align: center;
+    color: #2E7D32;
+    margin-bottom: 8px;
+}
+
+.assigned-container h3 {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+.pickup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 290px));
+    justify-content: center;
+    gap: 22px;
+}
+
+.pickup-card {
+    background: #ffffff;
+    width: 290px;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px solid #E8F5E9;
+    box-shadow: 0 6px 18px rgba(46, 125, 50, 0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.pickup-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 24px rgba(46, 125, 50, 0.15);
+}
+
+.pickup-card h2 {
+    color: #2E7D32;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    border-bottom: 1px solid #E8F5E9;
+    padding-bottom: 8px;
+}
+
+.pickup-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pickup-info span {
+    font-size: 15px;
+    color: #444;
+    line-height: 1.35;
+}
+
+.pickup-info b {
+    color: #222;
+}
+
+.status{
+    display: block;
+    width: fit-content;
+    margin: 12px auto;   /* Center */
+    background: #43A047;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+}
+.pickup-card button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 11px;
+    background: #2E7D32;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.pickup-card button:hover {
+    background: #1B5E20;
+}
+
+@media (max-width: 768px) {
+
+    .assigned-container {
+        padding: 15px;
+    }
+
+    .pickup-grid {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .pickup-card {
+        width: 100%;
+        max-width: 290px;
+    }
+
+}

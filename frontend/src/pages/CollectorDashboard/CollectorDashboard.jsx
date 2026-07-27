@@ -1,5 +1,6 @@
 import "./CollectorDashboard.css";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import DashboardTopBar from "../../components/TopBar/DashboardTopBar";
 import { useEffect, useState } from "react";
 import API from "../../services/api";
@@ -7,13 +8,43 @@ import API from "../../services/api";
 
 function CollectorDashboard() {
 
+<<<<<<< HEAD
 
   const navigate = useNavigate();
 
+=======
+  const navigate = useNavigate();
+
+  const [status, setStatus] = useState("Assigned");
+
+  const startPickup = (user) => {
+
+    alert(`${user} Pickup Started 🚚`);
+
+    setStatus("In Progress");
+
+  };
+
+  return (
+    <>
+      <DashboardTopBar role="Collector" />
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 
   const [requests,setRequests] = useState([]);
 
+<<<<<<< HEAD
 
+=======
+        <aside className="collector-sidebar">
+
+          <h2>♻ Smart Waste</h2>
+
+          <ul>
+
+            <li onClick={() => navigate("/CollectorDashboard")}>
+              🏠 Dashboard
+            </li>
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 
   // Temporary collector id
   const collectorId = 2;
@@ -24,7 +55,17 @@ function CollectorDashboard() {
 
     fetchAssignedRequests();
 
+<<<<<<< HEAD
   },[]);
+=======
+            <li onClick={() => navigate("/login/collector")}>
+              🚪 Logout
+            </li>
+
+          </ul>
+
+        </aside>
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 
 
 
@@ -40,11 +81,67 @@ function CollectorDashboard() {
       );
 
 
+<<<<<<< HEAD
       console.log(response.data);
 
 
       setRequests(response.data);
 
+=======
+            <table>
+
+              <thead>
+
+                <tr>
+                  <th>User</th>
+                  <th>Location</th>
+                  <th>Waste Type</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                <tr>
+
+                  <td>Gifty</td>
+
+                  <td>Tirunelveli</td>
+
+                  <td>Plastic</td>
+
+                  <td>
+                    {status === "Assigned"
+                      ? "🟡 Assigned"
+                      : "🔵 In Progress"}
+                  </td>
+
+                  <td>
+
+                    {status === "Assigned" ? (
+
+                      <button
+                        onClick={() => startPickup("Gifty")}
+                      >
+                        🚚 Start Pickup
+                      </button>
+
+                    ) : (
+
+                      <button disabled>
+                        🔄 In Progress
+                      </button>
+
+                    )}
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 
 
     }
@@ -223,6 +320,14 @@ requests.filter(
 item=>item.Status==="Assigned"
 ).length
 
+<<<<<<< HEAD
+=======
+      </div>
+
+    </>
+  );
+
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 }
 
 </h2>

@@ -1,0 +1,97 @@
+.route-container{
+    padding:30px;
+    background:#f5faf5;
+    min-height:100vh;
+}
+
+.route-container h1{
+    text-align:center;
+    color:#2e7d32;
+    margin-bottom:25px;
+}
+
+.route-card{
+    width:700px;
+    max-width:95%;
+    margin:auto;
+    background:#fff;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.route-card h3{
+    color:#2e7d32;
+    margin-bottom:15px;
+}
+
+.route-card p{
+    margin:10px 0;
+    font-size:16px;
+    color:#444;
+}
+
+.map-box{
+    height:350px;
+    border:2px dashed #81c784;
+    border-radius:12px;
+    margin:20px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#eef8ee;
+    color:#2e7d32;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.reach-btn{
+    width:100%;
+    padding:12px;
+    background:#2e7d32;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    margin-top:15px;
+    transition:.3s;
+}
+
+.reach-btn:hover{
+    background:#1b5e20;
+}
+
+.back-btn{
+    width:100%;
+    padding:12px;
+    background:#607d8b;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    margin-top:10px;
+    transition:.3s;
+}
+
+.back-btn:hover{
+    background:#455a64;
+}
+
+@media(max-width:768px){
+
+    .route-container{
+        padding:15px;
+    }
+
+    .route-card{
+        padding:18px;
+    }
+
+    .map-box{
+        height:250px;
+        font-size:16px;
+    }
+
+}s

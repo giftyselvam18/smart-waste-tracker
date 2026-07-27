@@ -8,25 +8,26 @@ const PickupAssignment = sequelize.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
-      field: "AssignmentID",
     },
 
     RequestID: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: "RequestID",
     },
 
     CollectorID: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: "CollectorID",
     },
 
     AssignedDate: {
       type: DataTypes.DATE,
+<<<<<<< HEAD
       allowNull: true,
       field: "AssignedDate",
+=======
+      defaultValue: DataTypes.NOW,
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
     },
 
     Status: {

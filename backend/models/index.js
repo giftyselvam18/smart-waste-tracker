@@ -4,6 +4,7 @@ const Collector = require("./Collector");
 const WasteCategory = require("./WasteCategory");
 const PickupRequest = require("./PickupRequest");
 const PickupAssignment = require("./PickupAssignment");
+console.log("PickupAssignment:", PickupAssignment);
 const Notification = require("./Notification");
 
 /* ==========================

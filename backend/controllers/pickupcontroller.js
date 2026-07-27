@@ -7,8 +7,7 @@ const {
 } = require("../models");
 
 
-// ==========================
-// Create Pickup Request
+
 // ==========================
 exports.createPickupRequest = async (req, res) => {
   try {
@@ -22,18 +21,18 @@ exports.createPickupRequest = async (req, res) => {
 
   } catch (error) {
 
+
     console.log(error);
+=======
+    console.error(error);
+
 
     res.status(500).json({
       message: error.message,
     });
 
   }
-};
 
-
-
-// ==========================
 // Get All Pickup Requests
 // ==========================
 exports.getAllPickupRequests = async (req, res) => {
@@ -59,6 +58,16 @@ exports.getAllPickupRequests = async (req, res) => {
 
     console.log(error);
 
+=======
+  try {
+
+    const pickups = await PickupRequest.findAll();
+
+    res.status(200).json(pickups);
+
+  } catch (error) {
+
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
     res.status(500).json({
       message: error.message,
     });
@@ -69,12 +78,17 @@ exports.getAllPickupRequests = async (req, res) => {
 
 
 
+<<<<<<< HEAD
 // ==========================
 // Get Pickup By ID
 // ==========================
+=======
+// Get Pickup Request By ID
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 exports.getPickupRequestById = async (req, res) => {
 
   try {
+<<<<<<< HEAD
 
     const request = await PickupRequest.findByPk(
       req.params.id,
@@ -83,19 +97,294 @@ exports.getPickupRequestById = async (req, res) => {
           User,
           WasteCategory
         ],
-      }
-    );
+=======
+
+    const pickup = await PickupRequest.findByPk(req.params.id);
 
 
-    if (!request) {
+    if (!pickup) {
 
       return res.status(404).json({
-        message:"Pickup Request Not Found",
+        message: "Pickup request not found",
       });
 
     }
 
 
+    res.status(200).json(pickup);
+
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message,
+    });
+
+  }
+};
+
+
+
+
+// Update Pickup Request
+exports.updatePickupRequest = async (req, res) => {
+
+  try {
+
+    const pickup = await PickupRequest.findByPk(req.params.id);
+
+
+    if (!pickup) {
+
+      return res.status(404).json({
+        message: "Pickup request not found",
+      });
+
+    }
+
+
+    await pickup.update(req.body);
+
+
+    res.status(200).json({
+
+      message: "Pickup request updated successfully",
+
+      pickup,
+
+    });
+
+
+  } catch(error) {
+
+    res.status(500).json({
+      message:error.message,
+    });
+
+  }
+
+};
+
+
+
+
+// Delete Pickup Request
+exports.deletePickupRequest = async (req,res)=>{
+
+  try{
+
+    const pickup = await PickupRequest.findByPk(req.params.id);
+
+
+    if(!pickup){
+
+      return res.status(404).json({
+
+        message:"Pickup request not found"
+
+      });
+
+    }
+
+
+    await pickup.destroy();
+
+
+    res.status(200).json({
+
+      message:"Pickup request deleted successfully"
+
+    });
+
+
+  }catch(error){
+
+    res.status(500).json({
+
+      message:error.message
+
+    });
+
+  }
+
+};
+
+
+
+
+
+// =========================
+// Pickup Assignment
+// =========================
+
+
+// Assign Collector
+exports.assignCollector = async(req,res)=>{
+
+  try{
+
+
+    const { RequestID, CollectorID } = req.body;
+
+
+
+    // Check duplicate assignment
+    const existingAssignment = await PickupAssignment.findOne({
+
+      where:{
+
+        RequestID,
+
+        CollectorID
+
+      }
+
+    });
+
+
+
+    if(existingAssignment){
+
+      return res.status(400).json({
+
+        message:"Pickup already assigned to this collector"
+
+      });
+
+    }
+
+
+
+
+    // Create Assignment
+    const assignment = await PickupAssignment.create({
+
+      RequestID,
+
+      CollectorID,
+
+      AssignedDate:new Date(),
+
+    });
+
+
+
+
+
+    // Update Pickup Status
+    await PickupRequest.update(
+
+      {
+
+        Status:"Assigned"
+
+      },
+
+      {
+
+        where:{
+
+          RequestID
+
+        }
+
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
+      }
+
+    );
+
+<<<<<<< HEAD
+
+    if (!request) {
+
+      return res.status(404).json({
+        message:"Pickup Request Not Found",
+=======
+
+
+
+
+    res.status(201).json({
+
+      message:"Collector assigned successfully",
+
+      assignment
+
+    });
+
+
+
+  }catch(error){
+
+
+    console.error("Assign Collector Error:", error);
+
+
+    res.status(500).json({
+
+      message:error.message
+
+    });
+
+
+  }
+
+};
+
+
+
+
+
+// Get All Assignments
+exports.getAllAssignments = async(req,res)=>{
+
+  try{
+
+    const assignments = await PickupAssignment.findAll();
+
+
+    res.status(200).json(assignments);
+
+
+  }catch(error){
+
+    res.status(500).json({
+
+      message:error.message
+
+    });
+
+  }
+
+};
+
+
+
+
+
+// Get Assignment By ID
+exports.getAssignmentById = async(req,res)=>{
+
+  try{
+
+
+    const assignment = await PickupAssignment.findByPk(req.params.id);
+
+
+
+    if(!assignment){
+
+      return res.status(404).json({
+
+        message:"Assignment not found"
+
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
+      });
+
+    }
+
+
+<<<<<<< HEAD
     res.json(request);
 
 
@@ -107,10 +396,28 @@ exports.getPickupRequestById = async (req, res) => {
       message:error.message,
     });
 
+=======
+
+    res.status(200).json(assignment);
+
+
+
+  }catch(error){
+
+
+    res.status(500).json({
+
+      message:error.message
+
+    });
+
+
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
   }
 
 };
 
+<<<<<<< HEAD
 
 
 // ==========================
@@ -127,11 +434,35 @@ exports.updatePickupRequest = async(req,res)=>{
 
       return res.status(404).json({
         message:"Pickup Request Not Found",
+=======
+
+
+
+
+// Delete Assignment
+exports.deleteAssignment = async(req,res)=>{
+
+
+  try{
+
+
+    const assignment = await PickupAssignment.findByPk(req.params.id);
+
+
+
+    if(!assignment){
+
+      return res.status(404).json({
+
+        message:"Assignment not found"
+
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
       });
 
     }
 
 
+<<<<<<< HEAD
     await request.update(req.body);
 
 
@@ -320,16 +651,38 @@ console.log("STATUS UPDATE RESULT:", updateStatus);
 
 
 
+=======
+
+    await assignment.destroy();
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
+
+
 
     res.status(200).json({
 
+<<<<<<< HEAD
       message:"Collector Assigned Successfully",
 
       assignment
+=======
+      message:"Assignment deleted successfully"
 
     });
 
 
+
+  }catch(error){
+
+
+    res.status(500).json({
+
+      message:error.message
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
+
+    });
+
+
+<<<<<<< HEAD
 
   }
   catch(error){
@@ -337,6 +690,70 @@ console.log("STATUS UPDATE RESULT:", updateStatus);
     console.log("ASSIGN ERROR:", error.message);
 
     console.log(error.original);
+=======
+  }
+
+};
+
+
+
+
+
+// =========================
+// Start Pickup
+// =========================
+
+
+exports.startPickup = async(req,res)=>{
+
+
+  try{
+
+
+    const pickup = await PickupRequest.findByPk(req.params.id);
+
+
+
+    if(!pickup){
+
+      return res.status(404).json({
+
+        message:"Pickup request not found"
+
+      });
+
+    }
+
+
+
+
+    await pickup.update({
+
+      Status:"On the Way"
+
+    });
+
+
+
+
+
+    res.status(200).json({
+
+      message:"Pickup started successfully",
+
+      pickup
+
+    });
+
+
+
+
+  }catch(error){
+
+
+    console.error("Start Pickup Error:",error);
+
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 
 
     res.status(500).json({
@@ -345,6 +762,7 @@ console.log("STATUS UPDATE RESULT:", updateStatus);
 
     });
 
+<<<<<<< HEAD
   }
 
 };
@@ -536,10 +954,67 @@ exports.deleteAssignment = async(req,res)=>{
 
  }
 
+=======
+
+  }
+
+
+};
+
+// =========================
+// Today's Collection
+// =========================
+
+exports.getTodayCollection = async (req, res) => {
+
+  try {
+
+    const today = new Date().toISOString().split("T")[0];
+
+
+    const collections = await PickupRequest.findAll({
+
+      where: {
+
+        Status: "Completed",
+
+        PickupDate: today
+
+      }
+
+    });
+
+
+    res.status(200).json({
+
+      totalCollection: collections.length,
+
+      collections
+
+    });
+
+
+  } catch(error) {
+
+
+    console.error(error);
+
+
+    res.status(500).json({
+
+      message: error.message
+
+    });
+
+
+  }
+
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 };
 
 
 
+<<<<<<< HEAD
 
 
 
@@ -629,12 +1104,32 @@ exports.completePickup = async(req,res)=>{
       return res.status(404).json({
 
         message:"Assignment Not Found",
+=======
+// =========================
+// Complete Pickup
+// =========================
+
+
+exports.completePickup = async (req, res) => {
+
+  try {
+
+    const pickup = await PickupRequest.findByPk(req.params.id);
+
+
+    if (!pickup) {
+
+      return res.status(404).json({
+
+        message: "Pickup request not found"
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 
       });
 
     }
 
 
+<<<<<<< HEAD
 
     // Update Assignment Status
 
@@ -685,24 +1180,54 @@ if(collector){
     res.json({
 
       message:"Pickup Completed Successfully",
+=======
+    await pickup.update({
+
+      Status: "Completed"
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 
     });
 
 
 
+<<<<<<< HEAD
  }catch(error){
 
 
     console.log(error);
+=======
+    res.status(200).json({
 
+      message: "Pickup completed successfully",
 
-    res.status(500).json({
-
-      message:error.message,
+      pickup
 
     });
 
 
+
+  } catch(error) {
+
+
+    console.error("Complete Pickup Error:", error);
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
+
+
+    res.status(500).json({
+
+<<<<<<< HEAD
+      message:error.message,
+=======
+      message: error.message
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
+
+    });
+
+
+<<<<<<< HEAD
  }
+=======
+  }
+>>>>>>> 693b0d7 (Added today collection and collector profile features)
 
 };

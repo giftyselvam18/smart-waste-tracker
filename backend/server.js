@@ -15,6 +15,7 @@ const collectorRoutes = require("./routes/collectorRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const pickupRoutes = require("./routes/pickupRoutes");
 
+
 // Load Models & Associations
 require("./models");
 
