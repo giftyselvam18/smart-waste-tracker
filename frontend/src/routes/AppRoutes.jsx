@@ -16,8 +16,6 @@ import ManageUsers from "../pages/AdminDashboard/ManageUsers";
 import ManageCollectors from "../pages/AdminDashboard/ManageCollectors";
 import PickupRequests from "../pages/AdminDashboard/PickupRequests";
 import CollectionAreas from "../pages/AdminDashboard/CollectionAreas";
-import Reports from "../pages/AdminDashboard/Reports";
-import Settings from "../pages/AdminDashboard/Settings";
 import CollectorDashboard from "../pages/CollectorDashboard/CollectorDashboard";
 import AssignedPickups from "../pages/CollectorDashboard/AssignedPickups";
 import TodaysCollection from "../pages/CollectorDashboard/TodaysCollection";
@@ -46,8 +44,7 @@ function AppRoutes() {
    <Route path="/admin/collectors" element={<ManageCollectors />} />
    <Route path="/admin/pickups" element={<PickupRequests />} />
    <Route path="/admin/areas" element={<CollectionAreas />} />
-   <Route path="/admin/reports" element={<Reports />} />
-   <Route path="/admin/settings" element={<Settings />} />
+
   <Route path="/CollectorDashboard"element={<CollectorDashboard />} />
    <Route path="/collector/pickups" element={<AssignedPickups />} />
    <Route path="/collector/today" element={<TodaysCollection />} />
