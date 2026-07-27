@@ -4,7 +4,14 @@ const { Admin } = require("../models");
 // Admin Login
 exports.login = async (req, res) => {
   try {
-    const { AdminUsername, Password, SecurityCode } = req.body;
+    const AdminUsername =
+  req.body.AdminUsername || req.body.username;
+
+const Password =
+  req.body.Password || req.body.password;
+
+const SecurityCode =
+  req.body.SecurityCode || req.body.securityCode;
 
     const admin = await Admin.findOne({
       where: { AdminUsername },

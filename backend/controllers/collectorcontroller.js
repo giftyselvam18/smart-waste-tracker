@@ -4,7 +4,11 @@ const { Collector } = require("../models");
 // Collector Login
 exports.login = async (req, res) => {
   try {
-    const { CollectorCode, Password } = req.body;
+    const CollectorCode =
+  req.body.CollectorCode || req.body.username;
+
+const Password =
+  req.body.Password || req.body.password;
 
     const collector = await Collector.findOne({
       where: { CollectorCode },

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { User, Admin, Collector } = require("../models");
 
 exports.register = async (req, res) => {
   try {
@@ -25,30 +25,76 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { Username, Password } = req.body;
+    const { username, password, role, securityCode } = req.body;
 
-    const user = await User.findOne({
-      where: { Username },
-    });
+    let user = null;
+    let payload = {};
 
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
+    if (role === "user") {
+      user = await User.findOne({
+        where: { Username: username },
+      });
+
+      if (!user)
+        return res.status(404).json({ message: "User not found" });
+
+      if (user.Password !== password)
+        return res.status(401).json({ message: "Invalid password" });
+
+      payload = {
+        id: user.UserID,
+        role: "user",
+        username: user.Username,
+      };
+    }
+
+    else if (role === "collector") {
+      user = await Collector.findOne({
+        where: { CollectorCode: username },
+      });
+
+      if (!user)
+        return res.status(404).json({ message: "Collector not found" });
+
+      if (user.Password !== password)
+        return res.status(401).json({ message: "Invalid password" });
+
+      payload = {
+        id: user.CollectorID,
+        role: "collector",
+        username: user.CollectorCode,
+      };
+    }
+
+    else if (role === "admin") {
+      user = await Admin.findOne({
+        where: { AdminUsername: username },
+      });
+
+      if (!user)
+        return res.status(404).json({ message: "Admin not found" });
+
+      if (user.Password !== password)
+        return res.status(401).json({ message: "Invalid password" });
+
+      if (user.SecurityCode !== securityCode)
+        return res.status(401).json({ message: "Invalid security code" });
+
+      payload = {
+        id: user.AdminID,
+        role: "admin",
+        username: user.AdminUsername,
+      };
+    }
+
+    else {
+      return res.status(400).json({
+        message: "Invalid role",
       });
     }
 
-    if (user.Password !== Password) {
-      return res.status(401).json({
-        message: "Invalid password",
-      });
-    }
-
-    // Generate JWT Token
     const token = jwt.sign(
-      {
-        UserID: user.UserID,
-        Username: user.Username,
-      },
+      payload,
       process.env.JWT_SECRET,
       {
         expiresIn: process.env.JWT_EXPIRES_IN,
@@ -58,9 +104,12 @@ exports.login = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      user,
+      user: payload,
     });
+
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
       message: error.message,
     });
