@@ -36,18 +36,7 @@ function AdminDashboard() {
               📍 Collection Areas
             </li>
 
-            <li onClick={() => navigate("/admin/reports")}>
-              📈 Reports
-            </li>
-
-            <li onClick={() => navigate("/admin/settings")}>
-              ⚙ Settings
-            </li>
-
-            <li onClick={() => navigate("/login/admin")}>
-              🚪 Logout
-            </li>
-
+            
           </ul>
 
         </aside>

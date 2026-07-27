@@ -1,0 +1,131 @@
+.pickup-container {
+    padding: 30px;
+    background: #f5f8f7;
+    min-height: 100vh;
+}
+
+
+.pickup-container h1 {
+    font-size: 32px;
+    margin-bottom: 25px;
+    color: #1b4332;
+}
+
+
+/* Request Card */
+
+.pickup-card {
+    background: white;
+    width: 100%;
+    max-width: 600px;
+    padding: 25px;
+    margin-bottom: 20px;
+
+    border-radius: 15px;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+
+    transition: 0.3s;
+}
+
+
+.pickup-card:hover {
+    transform: translateY(-5px);
+}
+
+
+/* User Name */
+
+.pickup-card h2 {
+    color: #2d6a4f;
+    margin-bottom: 15px;
+}
+
+
+/* Details */
+
+.pickup-card p {
+    font-size: 16px;
+    color: #444;
+    margin: 12px 0;
+}
+
+
+.pickup-card span {
+    font-weight: bold;
+    color: orange;
+}
+
+
+/* Buttons */
+
+.pickup-card button {
+
+    padding: 10px 22px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    margin-right: 12px;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+
+/* Accept */
+
+.pickup-card button:first-child {
+
+    background: #2d6a4f;
+
+    color: white;
+
+}
+
+
+.pickup-card button:first-child:hover {
+
+    background: #1b4332;
+
+}
+
+
+
+/* Reject */
+
+.pickup-card button:last-child {
+
+    background: #d62828;
+
+    color:white;
+
+}
+
+
+.pickup-card button:last-child:hover {
+
+    background:#a4161a;
+
+}
+
+
+/* Empty Message */
+
+.pickup-container h3 {
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:10px;
+
+    width:300px;
+
+    color:#666;
+
+}
