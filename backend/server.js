@@ -6,6 +6,12 @@ const cors = require("cors");
 const { Server } = require("socket.io");
 
 const { sequelize, connectDB } = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const collectorRoutes = require("./routes/collectorRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const pickupRoutes = require("./routes/pickupRoutes");
 
 // Load all models & associations
 require("./models");
@@ -20,6 +26,12 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/user", require("./routes/user"));
 app.use("/api/admin", require("./routes/admin"));
 app.use("/api/collector", require("./routes/collector"));
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/users", userRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/collectors", collectorRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/pickups", pickupRoutes);
 
 const server = http.createServer(app);
 
