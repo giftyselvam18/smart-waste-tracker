@@ -1,97 +1,272 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import "./PickupRequests.css";
 import FeatureTopBar from "../../components/TopBar/FeatureTopBar";
+import { useEffect, useState } from "react";
+import API from "../../services/api";
 
-function PickupRequests(){
+function PickupRequests() {
 
-    const [requests, setRequests] = useState([]);
-
-
-    useEffect(()=>{
-
-        getPickupRequests();
-
-    },[]);
+  const [requests, setRequests] = useState([]);
 
 
+  useEffect(() => {
+    fetchRequests();
+  }, []);
 
-    const getPickupRequests = async()=>{
 
-        try{
 
-            const response = await axios.get(
-                "http://localhost:5000/api/pickups"
-            );
+  const fetchRequests = async () => {
 
-            console.log(response.data);
+    try {
 
-            setRequests(response.data);
+      const response = await API.get("/pickups/request");
 
+      console.log(response.data);
+
+      setRequests(response.data);
+
+
+    } catch(error){
+
+      console.error(error);
+
+      alert("Failed to fetch pickup requests");
+
+    }
+
+  };
+
+
+
+  const updateStatus = async(id,status)=>{
+
+    try{
+
+      await API.put(
+        `/pickups/request/${id}`,
+        {
+          Status:status
         }
-        catch(error){
+      );
 
-            console.log("Pickup Fetch Error:", error);
+      alert(`Request ${status}`);
 
-        }
-
-    };
+      fetchRequests();
 
 
+    }catch(error){
 
-    return(
-        <>
+      console.log(error);
 
-        <FeatureTopBar dashboardPath="/AdminDashboard" />
+    }
 
-        <div>
-
-            <h1>🗑 Pickup Requests</h1>
+  };
 
 
-            {
-                requests.length > 0 ?
 
-                requests.map((pickup)=>(
-                    
-                    <div key={pickup.PickupID}>
+return (
 
-                        <p>User : {pickup.UserName}</p>
+<>
 
-                        <p>
-                          Waste Type : {pickup.WasteType}
-                        </p>
-
-                        <p>
-                          Status : {pickup.Status}
-                        </p>
+<FeatureTopBar dashboardPath="/AdminDashboard" />
 
 
-                        <button>
-                            Accept
-                        </button>
+<div className="pickup-container">
 
 
-                        <button>
-                            Reject
-                        </button>
+<h1>🗑 Pickup Requests</h1>
 
 
-                    </div>
 
-                ))
-
-                :
-
-                <p>No Pickup Found</p>
-
-            }
+<table className="pickup-table">
 
 
-        </div>
+<thead>
 
-        </>
-    )
+<tr>
+
+<th>ID</th>
+
+<th>User</th>
+
+<th>Waste Type</th>
+
+<th>Weight (Kg)</th>
+
+<th>Address</th>
+
+<th>Pickup Date</th>
+
+<th>Pickup Time</th>
+
+<th>Image</th>
+
+<th>Status</th>
+
+<th>Action</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+{
+requests.length > 0 ? (
+
+requests.map((request)=>(
+
+
+<tr key={request.RequestID}>
+
+
+<td>
+{request.RequestID}
+</td>
+
+
+
+<td>
+{request.User?.FullName}
+</td>
+
+
+
+<td>
+{request.WasteCategory?.CategoryName}
+</td>
+
+
+
+<td>
+{request.Weight} Kg
+</td>
+
+
+
+<td>
+{request.PickupAddress}
+</td>
+
+
+
+<td>
+{request.PickupDate}
+</td>
+
+
+
+<td>
+{request.PickupTime}
+</td>
+
+
+
+<td>
+
+
+{
+request.WasteImage ? (
+
+<img
+src={`http://localhost:5000/uploads/${request.WasteImage}`}
+alt="waste"
+width="80"
+height="80"
+/>
+
+)
+
+:
+
+(
+"No Image"
+)
 
 }
+
+
+</td>
+
+
+
+<td>
+{request.Status}
+</td>
+
+
+
+<td>
+
+
+<button
+className="accept-btn"
+onClick={()=>updateStatus(
+request.RequestID,
+"Accepted"
+)}
+>
+Accept
+</button>
+
+
+
+<button
+className="reject-btn"
+onClick={()=>updateStatus(
+request.RequestID,
+"Rejected"
+)}
+>
+Reject
+</button>
+
+
+</td>
+
+
+</tr>
+
+
+))
+
+
+)
+
+:
+
+(
+
+<tr>
+
+<td colSpan="10">
+No Pickup Requests Found
+</td>
+
+</tr>
+
+)
+
+}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</>
+
+)
+
+}
+
 
 export default PickupRequests;

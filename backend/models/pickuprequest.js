@@ -29,16 +29,45 @@ const PickupRequest = sequelize.define(
       field: "PickupAddress",
     },
 
+
+    // Already exists
     PickupDate: {
       type: DataTypes.DATEONLY,
       allowNull: false,
       field: "PickupDate",
     },
 
+
+    // New Field - Weight
+    Weight: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "Weight",
+    },
+
+
+    // New Field - Pickup Time
+    PickupTime: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "PickupTime",
+    },
+
+
+    // New Field - Uploaded Image Name
+    WasteImage: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "WasteImage",
+    },
+
+
     Description: {
       type: DataTypes.STRING,
+      allowNull: true,
       field: "Description",
     },
+
 
     Status: {
       type: DataTypes.STRING,
@@ -46,15 +75,18 @@ const PickupRequest = sequelize.define(
       field: "Status",
     },
 
+
     RequestDate: {
       type: DataTypes.DATE,
       field: "RequestDate",
     },
+
   },
   {
     tableName: "PickupRequests",
     timestamps: false,
   }
 );
+
 
 module.exports = PickupRequest;

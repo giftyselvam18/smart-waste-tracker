@@ -53,7 +53,7 @@ function AdminDashboard() {
             </div>
 
             <div className="stat-card">
-              <h2>32</h2>
+              <h2>10</h2>
               <p>Collectors</p>
             </div>
 

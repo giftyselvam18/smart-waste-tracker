@@ -1,0 +1,96 @@
+.manage-users-container {
+  padding: 30px;
+  background-color: #f5f7fa;
+  min-height: 100vh;
+}
+
+.manage-users-container h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2c3e50;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.users-table th {
+  background-color: #007bff;
+  color: white;
+  padding: 14px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.users-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  font-size: 15px;
+}
+
+.users-table tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.users-table tr:hover {
+  background-color: #eaf4ff;
+  transition: 0.3s;
+}
+
+.status-active {
+  color: green;
+  font-weight: bold;
+}
+
+.status-inactive {
+  color: red;
+  font-weight: bold;
+}
+
+.edit-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  margin-right: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-btn:hover {
+  background-color: #218838;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+@media (max-width: 768px) {
+  .manage-users-container {
+    padding: 15px;
+  }
+
+  .users-table {
+    font-size: 13px;
+  }
+
+  .users-table th,
+  .users-table td {
+    padding: 8px;
+  }
+}
