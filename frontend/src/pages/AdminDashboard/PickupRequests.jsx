@@ -4,166 +4,109 @@ import FeatureTopBar from "../../components/TopBar/FeatureTopBar";
 import "./PickupRequests.css";
 
 function PickupRequests() {
-
   const [requests, setRequests] = useState([]);
 
   useEffect(() => {
-
-    axios
-      .get("http://localhost:5000/api/pickups")
-      .then((res) => {
-        setRequests(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
+    loadPickups();
   }, []);
 
+  const loadPickups = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/pickups/request"
+      );
+      setRequests(res.data);
+    } catch (error) {
+      console.error("Error loading pickups:", error);
+    }
+  };
 
   const handleAccept = async (id) => {
-
     try {
-
       await axios.put(
-        `http://localhost:5000/api/pickups/${id}`,
+        `http://localhost:5000/api/pickups/request/${id}`,
         {
-          status: "Accepted"
+          status: "Accepted",
         }
       );
 
-      setRequests(
-        requests.map((item) =>
-          item._id === id
-            ? { ...item, status: "Accepted" }
-            : item
-        )
-      );
-
+      loadPickups();
     } catch (error) {
-      console.log(error);
+      console.error("Accept Error:", error);
     }
-
   };
-
 
   const handleReject = async (id) => {
-
     try {
-
       await axios.put(
-        `http://localhost:5000/api/pickup/${id}`,
+        `http://localhost:5000/api/pickups/request/${id}`,
         {
-          status: "Rejected"
+          status: "Rejected",
         }
       );
 
-
-      setRequests(
-        requests.map((item) =>
-          item._id === id
-            ? { ...item, status: "Rejected" }
-            : item
-        )
-      );
-
-
+      loadPickups();
     } catch (error) {
-      console.log(error);
+      console.error("Reject Error:", error);
     }
-
   };
-
 
   return (
     <>
       <FeatureTopBar dashboardPath="/AdminDashboard" />
 
       <div className="pickup-container">
-
         <h1>🗑 Pickup Requests</h1>
 
+        {requests.length === 0 ? (
+          <h3>No Pickup Requests Found</h3>
+        ) : (
+          requests.map((request) => (
+            <div className="pickup-card" key={request.RequestID || request._id}>
+              <h2>👤 {request.userName || request.UserName}</h2>
 
-        {
-          requests.length === 0 ? (
+              <p>
+                ♻ Waste Type: <b>{request.wasteType || request.WasteType}</b>
+              </p>
 
-            <h3>No Pickup Requests Found</h3>
+              <p>
+                ⚖ Weight: <b>{request.weight || request.Weight} Kg</b>
+              </p>
 
-          ) : (
+              <p>
+                📅 Date: {request.pickupDate || request.PickupDate}
+              </p>
 
-            requests.map((request) => (
+              <p>
+                📍 Address: {request.pickupAddress || request.PickupAddress}
+              </p>
 
-              <div className="pickup-card" key={request._id}>
+              <p>
+                Status:{" "}
+                <span>{request.status || request.Status}</span>
+              </p>
 
+              <div className="button-group">
+                <button
+                  onClick={() =>
+                    handleAccept(request.RequestID || request._id)
+                  }
+                >
+                  Accept
+                </button>
 
-                <h2>👤 {request.userName}</h2>
-
-
-                <p>
-                  ♻ Waste Type :
-                  <b> {request.wasteType}</b>
-                </p>
-
-
-                <p>
-                  ⚖ Weight :
-                  <b> {request.weight} Kg</b>
-                </p>
-
-
-                <p>
-                  📅 Date :
-                  {request.pickupDate}
-                </p>
-
-
-                <p>
-                  📍 Address :
-                  {request.address}
-                </p>
-
-
-                <p>
-                  Status :
-                  <span>
-                    {request.status}
-                  </span>
-                </p>
-
-
-                <div>
-
-                  <button
-                    onClick={() =>
-                      handleAccept(request._id)
-                    }
-                  >
-                    Accept
-                  </button>
-
-
-                  <button
-                    onClick={() =>
-                      handleReject(request._id)
-                    }
-                  >
-                    Reject
-                  </button>
-
-
-                </div>
-
-
+                <button
+                  onClick={() =>
+                    handleReject(request.RequestID || request._id)
+                  }
+                >
+                  Reject
+                </button>
               </div>
-
-            ))
-
-          )
-        }
-
-
+            </div>
+          ))
+        )}
       </div>
-
     </>
   );
 }

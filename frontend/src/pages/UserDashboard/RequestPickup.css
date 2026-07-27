@@ -1,253 +1,370 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
+/* ===========================
+   PAGE
+=========================== */
+
+.pickup-page{
+    position:relative;
+    width:100%;
+    min-height:100vh;
+    overflow:hidden;
 }
 
-.pickup-page {
-  min-height: 100vh;
-  background: #f3faf5;
-  padding: 35px;
+
+/* ===========================
+   BACKGROUND IMAGE
+=========================== */
+
+.background-image{
+    position:absolute;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+    z-index:-2;
 }
 
-.pickup-card {
-  display: flex;
-  gap: 35px;
-  width: 200%;          /* Box smaller */
-  max-width: 1200px;   /* Maximum width */
-  margin: 0 auto;      /* Center */
-  background: #fff;
-  border-radius: 25px;
-  padding: 30px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+
+/* ===========================
+   OVERLAY CENTER
+=========================== */
+
+.overlay{
+    position:relative;
+
+    width:100%;
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center; 
+    align-items:center;
+
+
+    padding:0;
 }
 
-.pickup-form-section {
-  flex: 2;
+
+/* ===========================
+   FORM CARD
+=========================== */
+
+.pickup-card{
+    width:430px;
+    background:#fff;
+    border-radius:18px;
+    padding:25px;
 }
 
-.pickup-info {
-  flex: 1;
-  background: #f7fff8;
-  border-radius: 20px;
-  padding: 20px;
-  border: 1px solid #22c55e;
-  display: flex;
-  flex-direction: column;
+/* ===========================
+   HEADER
+=========================== */
+
+.pickup-header{
+
+    display:flex;
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:18px;
 }
 
-.pickup-info img {
-  width: 100%;
-  height: 300px;
-  object-fit: contain;
-    display: block;
-  border-radius: 18px;
-  margin-bottom: 20px;
-}
-.pickup-header {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-bottom: 30px;
+
+.pickup-icon{
+
+    width:45px;
+    height:45px;
+
+    border-radius:50%;
+
+    background:#16a34a;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:18px;
 }
 
-.pickup-icon {
-  width: 75px;
-  height: 75px;
-  border-radius: 18px;
-  background: #e9f8ec;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #1b8d43;
-  font-size: 30px;
+
+.pickup-header h2{
+
+    margin:0;
+
+    color:#14532d;
+
+    font-size:22px;
 }
 
-.pickup-header h2 {
-  color: #1f2937;
-  font-size: 32px;
+
+.pickup-header p{
+
+    margin-top:5px;
+
+    color:#666;
+
+    font-size:13px;
+
 }
 
-.pickup-header p {
-  color: #666;
-  margin-top: 6px;
+
+
+/* ===========================
+   FORM
+=========================== */
+
+
+form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
 }
 
-.form-group {
-  margin-bottom: 22px;
+
+.row{
+
+    display:flex;
+
+    gap:12px;
+
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #333;
+
+.form-group{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:5px;
+
 }
 
-.row {
-  display: flex;
-  gap: 20px;
+
+.form-group label{
+
+    font-size:13px;
+
+    font-weight:600;
+
+    color:#14532d;
+
 }
 
-.row .form-group {
-  flex: 1;
-}
+
+/* ===========================
+   INPUT BOX
+=========================== */
+
 
 .input-box,
-.textarea-box {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border: 1px solid #d6d6d6;
-  border-radius: 12px;
-  background: #fff;
-  padding: 14px 16px;
-  transition: 0.3s;
+.textarea-box,
+.upload-box{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+
+    background:#fff;
+
+
+    border:1.5px solid #325180;
+
+
+    border-radius:12px;
+
+
+    padding:10px 12px;
+
+
+    transition:0.3s;
+
 }
+
+
 
 .input-box:hover,
-.textarea-box:hover {
-  border-color: #2db84d;
+.textarea-box:hover,
+.upload-box:hover{
+
+    border-color:#22c55e;
+
 }
+
+
 
 .input-box:focus-within,
-.textarea-box:focus-within {
-  border-color: #16a34a;
-  box-shadow: 0 0 8px rgba(22, 163, 74, 0.2);
+.textarea-box:focus-within{
+
+    border-color:#22c55e;
+
+    box-shadow:
+    0 0 0 3px rgba(34,197,94,0.15);
+
 }
 
-.input-box svg,
-.textarea-box svg {
-  color: #22c55e;
-  font-size: 18px;
-}
+
+
+/* Input */
+
 
 .input-box input,
-.input-box select {
-  width: 100%;
-  border: none;
-  outline: none;
-  font-size: 15px;
-  background: transparent;
+.input-box select,
+.textarea-box textarea{
+
+    width:100%;
+
+    border:none;
+
+    outline:none;
+
+    background:transparent;
+
+    font-size:13px;
+
 }
 
-.textarea-box {
-  align-items: flex-start;
+
+
+.input-box input::placeholder,
+.textarea-box textarea::placeholder{
+
+    color:#6b7280;
+
 }
 
-.textarea-box textarea {
-  width: 100%;
-  border: none;
-  resize: none;
-  outline: none;
-  font-size: 15px;
-  background: transparent;
+
+
+/* Textarea */
+
+
+.textarea-box{
+
+    align-items:flex-start;
+
 }
 
-.upload-box {
-  border: 2px dashed #c8c8c8;
-  border-radius: 15px;
-  padding: 18px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  transition: .3s;
+
+.textarea-box textarea{
+
+    resize:none;
+
+    min-height:65px;
+
 }
 
-.upload-box:hover {
-  border-color: #16a34a;
-  background: #f6fff8;
+
+
+/* Upload */
+
+
+.upload-box input{
+
+    width:100%;
+
 }
 
-.upload-box svg {
-  color: #16a34a;
-  font-size: 22px;
+
+
+/* ===========================
+   BUTTON
+=========================== */
+
+
+.submit-btn{
+
+    width:100%;
+
+    margin-top:10px;
+
+
+    padding:12px;
+
+
+    border:none;
+
+
+    border-radius:12px;
+
+
+    background:#16a34a;
+
+
+    color:white;
+
+
+    font-size:14px;
+
+
+    cursor:pointer;
+
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:8px;
+
+
+    transition:0.3s;
+
 }
 
-.upload-box input {
-  width: 100%;
+
+
+.submit-btn:hover{
+
+    background:#15803d;
+
 }
 
-.submit-btn {
-  width: 100%;
-  padding: 18px;
-  border: none;
-  border-radius: 14px;
-  background: linear-gradient(90deg, #0f9d58, #34c759);
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  transition: .3s;
-}
 
-.submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(15, 157, 88, .3);
-}
 
-.info-card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+/* ===========================
+   RESPONSIVE
+=========================== */
 
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #fff;
-  border: 2px solid #22c55e;
-  border-radius: 14px;
-  padding: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  transition: 0.3s ease;
-}
 
-.info-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.15);
-}
+@media(max-width:600px){
 
-.info-item svg {
-  width: 42px;
-  height: 42px;
-  padding: 10px;
-  background: #22c55e;
-  color: white;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
 
-.info-item h4 {
-  font-size: 15px;
-  margin-bottom: 3px;
-  color: #1f2937;
-}
+    .overlay{
 
-.info-item p {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.4;
-}
-@media(max-width:1000px){
+        padding:15px;
 
-  .pickup-card{
-    flex-direction:column;
-  }
+    }
 
-  .row{
-    flex-direction:column;
-    gap:0;
-  }
 
-  .pickup-page{
-    padding:20px;
-  }
+    .pickup-card{
+
+        width:100%;
+
+        padding:20px;
+
+    }
+
+
+    .row{
+
+        flex-direction:column;
+
+    }
 
 }
