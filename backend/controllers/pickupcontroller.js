@@ -1,32 +1,63 @@
 const {
   PickupRequest,
   PickupAssignment,
+  Collector,
   User,
   WasteCategory,
 } = require("../models");
 
 
-
-// =========================
-// Pickup Request
-// =========================
-
-
+// ==========================
 // Create Pickup Request
+// ==========================
 exports.createPickupRequest = async (req, res) => {
-
   try {
 
     const pickup = await PickupRequest.create(req.body);
 
-
     res.status(201).json({
-      message: "Pickup request created successfully",
+      message: "Pickup Request Created Successfully",
       pickup,
     });
 
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+
+  }
+};
+
+
+
+// ==========================
+// Get All Pickup Requests
+// ==========================
+exports.getAllPickupRequests = async (req, res) => {
+
+  try {
+
+    const requests = await PickupRequest.findAll({
+
+      include: [
+        User,
+        WasteCategory,
+      ],
+
+      order: [["RequestID", "DESC"]],
+
+    });
+
+
+    res.json(requests);
+
 
   } catch (error) {
+
+    console.log(error);
 
     res.status(500).json({
       message: error.message,
@@ -38,51 +69,43 @@ exports.createPickupRequest = async (req, res) => {
 
 
 
-
-// Get All Pickup Requests
-exports.getAllPickupRequests = async (req, res) => {
+// ==========================
+// Get Pickup By ID
+// ==========================
+exports.getPickupRequestById = async (req, res) => {
 
   try {
 
-
-    const pickups = await PickupRequest.findAll({
-
-      include:[
-
-        {
-          model: User,
-          attributes:[
-            "FullName",
-            "Username",
-            "Phone"
-          ]
-        },
+    const request = await PickupRequest.findByPk(
+      req.params.id,
+      {
+        include: [
+          User,
+          WasteCategory
+        ],
+      }
+    );
 
 
-        {
-          model: WasteCategory,
-          attributes:[
-            "CategoryName"
-          ]
-        }
+    if (!request) {
 
-      ]
+      return res.status(404).json({
+        message:"Pickup Request Not Found",
+      });
 
-    });
+    }
 
 
-
-    res.status(200).json(pickups);
-
+    res.json(request);
 
 
-  } catch(error){
+  } catch(error) {
 
+    console.log(error);
 
     res.status(500).json({
-      message:error.message
+      message:error.message,
     });
-
 
   }
 
@@ -90,310 +113,296 @@ exports.getAllPickupRequests = async (req, res) => {
 
 
 
-
-
-
-// Get Pickup Request By ID
-exports.getPickupRequestById = async(req,res)=>{
-
-try{
-
-
-const pickup = await PickupRequest.findByPk(
-req.params.id,
-{
-
-include:[
-
-{
-model:User,
-attributes:["FullName"]
-},
-
-{
-model:WasteCategory,
-attributes:["CategoryName"]
-}
-
-]
-
-}
-
-);
-
-
-
-if(!pickup){
-
-return res.status(404).json({
-
-message:"Pickup request not found"
-
-});
-
-}
-
-
-
-res.status(200).json(pickup);
-
-
-
-}catch(error){
-
-
-res.status(500).json({
-
-message:error.message
-
-});
-
-
-}
-
-};
-
-
-
-
-
-
-
-
-// Update Pickup Request Status
+// ==========================
+// Update Pickup Request
+// ==========================
 exports.updatePickupRequest = async(req,res)=>{
 
-try{
+  try{
+
+    const request = await PickupRequest.findByPk(req.params.id);
 
 
-const pickup =
-await PickupRequest.findByPk(
-req.params.id
-);
+    if(!request){
+
+      return res.status(404).json({
+        message:"Pickup Request Not Found",
+      });
+
+    }
 
 
-
-if(!pickup){
-
-return res.status(404).json({
-
-message:"Pickup request not found"
-
-});
-
-}
+    await request.update(req.body);
 
 
+    res.json({
 
-await pickup.update(req.body);
+      message:"Pickup Request Updated Successfully",
+      request,
 
-
-
-res.status(200).json({
-
-message:"Pickup request updated successfully",
-
-pickup
-
-});
+    });
 
 
+  }catch(error){
 
-}catch(error){
+    console.log(error);
 
+    res.status(500).json({
+      message:error.message,
+    });
 
-res.status(500).json({
-
-message:error.message
-
-});
-
-
-}
+  }
 
 };
 
 
 
-
-
-
-
-
-
+// ==========================
 // Delete Pickup Request
+// ==========================
 exports.deletePickupRequest = async(req,res)=>{
 
-try{
+ try{
+
+  const request = await PickupRequest.findByPk(req.params.id);
 
 
-const pickup =
-await PickupRequest.findByPk(
-req.params.id
-);
+  if(!request){
+
+    return res.status(404).json({
+      message:"Pickup Request Not Found",
+    });
+
+  }
 
 
-
-if(!pickup){
-
-return res.status(404).json({
-
-message:"Pickup request not found"
-
-});
-
-}
+  await request.destroy();
 
 
+  res.json({
 
-await pickup.destroy();
+    message:"Pickup Request Deleted Successfully",
 
-
-
-res.status(200).json({
-
-message:"Pickup request deleted successfully"
-
-});
+  });
 
 
+ }catch(error){
 
-}catch(error){
+  console.log(error);
 
+  res.status(500).json({
+    message:error.message,
+  });
 
-res.status(500).json({
-
-message:error.message
-
-});
-
-
-}
+ }
 
 };
 
 
 
 
-
-
-
-
-
-// =========================
-// Pickup Assignment
-// =========================
-
-
-
+// ==========================
 // Assign Collector
-exports.assignCollector = async(req,res)=>{
+// ==========================
+exports.assignCollector = async (req, res) => {
 
-try{
+  try {
+
+    const {
+      RequestID,
+      CollectorID
+    } = req.body;
 
 
-const {
-RequestID,
-CollectorID
-}=req.body;
-
-
-
-const assignment =
-await PickupAssignment.create({
-
-RequestID,
-
-CollectorID,
-
-AssignedDate:new Date(),
-
-Status:"Assigned"
-
-});
+    console.log("Assign Request:", req.body);
 
 
 
+    // Check Pickup Request
+    const pickup = await PickupRequest.findByPk(RequestID);
 
 
-await PickupRequest.update(
+    if (!pickup) {
 
-{
-Status:"Assigned"
-},
+      return res.status(404).json({
 
-{
-where:{
-RequestID:RequestID
-}
-}
+        message: "Pickup Request Not Found",
 
+      });
+
+    }
+
+
+
+    // Check Collector
+    const collector = await Collector.findByPk(CollectorID);
+
+
+    if (!collector) {
+
+      return res.status(404).json({
+
+        message: "Collector Not Found",
+
+      });
+
+    }
+
+
+
+    // Check already assigned
+    const existingAssignment = await PickupAssignment.findOne({
+
+      where:{
+        RequestID: RequestID,
+        Status:"Assigned"
+      }
+
+    });
+
+
+
+    if(existingAssignment){
+
+      return res.status(400).json({
+
+        message:"Pickup Already Assigned"
+
+      });
+
+    }
+
+
+
+
+    // Create Assignment
+    const assignment = await PickupAssignment.create({
+
+      RequestID: RequestID,
+
+      CollectorID: CollectorID,
+
+      AssignedDate: new Date(),
+
+      Status:"Assigned",
+
+    });
+
+
+
+
+
+    // Change Collector Status Busy
+    
+
+const updateStatus = await Collector.update(
+  {
+    Status:"Busy"
+  },
+  {
+    where:{
+      CollectorID: CollectorID
+    }
+  }
 );
 
 
+console.log("STATUS UPDATE RESULT:", updateStatus);
+
+
+    // Change Pickup Status
+    await pickup.update({
+
+      Status:"Assigned"
+
+    });
 
 
 
-res.status(201).json({
-
-message:"Collector assigned successfully",
-
-assignment
-
-});
 
 
+    res.status(200).json({
 
-}catch(error){
+      message:"Collector Assigned Successfully",
 
+      assignment
 
-console.log(error);
-
-
-res.status(500).json({
-
-message:error.message
-
-});
+    });
 
 
-}
+
+  }
+  catch(error){
+
+    console.log("ASSIGN ERROR:", error.message);
+
+    console.log(error.original);
+
+
+    res.status(500).json({
+
+      message:error.message
+
+    });
+
+  }
 
 };
-
-
-
-
-
-
-
-
+// ==========================
 // Get All Assignments
+// ==========================
 exports.getAllAssignments = async(req,res)=>{
 
-try{
+ try{
 
 
-const assignments =
-await PickupAssignment.findAll();
+  const assignments = await PickupAssignment.findAll({
+
+    include:[
+
+      Collector,
+
+      {
+
+        model:PickupRequest,
+
+        include:[
+          User,
+          WasteCategory
+        ],
+
+      },
+
+    ],
+
+
+    order:[
+      ["AssignmentID","DESC"]
+    ],
+
+
+  });
 
 
 
-res.status(200).json(assignments);
+  res.json(assignments);
 
 
 
-}catch(error){
+ }catch(error){
 
 
-res.status(500).json({
-
-message:error.message
-
-});
+  console.log(error);
 
 
-}
+  res.status(500).json({
+
+    message:error.message,
+
+  });
+
+
+ }
 
 };
 
@@ -401,50 +410,73 @@ message:error.message
 
 
 
-
-
-
-
+// ==========================
 // Get Assignment By ID
+// ==========================
 exports.getAssignmentById = async(req,res)=>{
 
-try{
+ try{
 
 
-const assignment =
-await PickupAssignment.findByPk(
-req.params.id
-);
+  const assignment = await PickupAssignment.findByPk(
+
+    req.params.id,
+
+    {
+
+      include:[
+
+        Collector,
+
+        {
+
+          model:PickupRequest,
+
+          include:[
+            User,
+            WasteCategory
+          ],
+
+        },
+
+      ],
+
+    }
+
+  );
 
 
 
-if(!assignment){
+  if(!assignment){
 
-return res.status(404).json({
+    return res.status(404).json({
 
-message:"Assignment not found"
+      message:"Assignment Not Found",
 
-});
+    });
 
-}
-
-
-
-res.status(200).json(assignment);
+  }
 
 
 
-}catch(error){
+  res.json(assignment);
 
 
-res.status(500).json({
 
-message:error.message
-
-});
+ }catch(error){
 
 
-}
+  console.log(error);
+
+
+  res.status(500).json({
+
+    message:error.message,
+
+  });
+
+
+ }
 
 };
 
@@ -453,57 +485,56 @@ message:error.message
 
 
 
-
-
-
+// ==========================
 // Delete Assignment
+// ==========================
 exports.deleteAssignment = async(req,res)=>{
 
-try{
+ try{
 
 
-const assignment =
-await PickupAssignment.findByPk(
-req.params.id
-);
+  const assignment = await PickupAssignment.findByPk(req.params.id);
 
 
 
-if(!assignment){
+  if(!assignment){
 
-return res.status(404).json({
+    return res.status(404).json({
 
-message:"Assignment not found"
+      message:"Assignment Not Found",
 
-});
+    });
 
-}
-
-
-
-await assignment.destroy();
+  }
 
 
 
-res.status(200).json({
-
-message:"Assignment deleted successfully"
-
-});
+  await assignment.destroy();
 
 
 
-}catch(error){
+  res.json({
+
+    message:"Assignment Deleted Successfully",
+
+  });
 
 
-res.status(500).json({
 
-message:error.message
-
-});
+ }catch(error){
 
 
-}
+  console.log(error);
+
+
+  res.status(500).json({
+
+    message:error.message,
+
+  });
+
+
+ }
 
 };
 
@@ -512,76 +543,166 @@ message:error.message
 
 
 
-
-
-// =========================
+// ==========================
 // Collector Dashboard
-// =========================
-
-
-// Get Collector Assigned Requests
-
+// ==========================
 exports.getCollectorRequests = async(req,res)=>{
 
-try{
+ try{
 
 
-const assignments = await PickupAssignment.findAll({
-
-where:{
-CollectorID:req.params.id
-},
+  const collectorId = req.params.id;
 
 
-include:[
 
-{
+  const requests = await PickupAssignment.findAll({
 
-model:PickupRequest,
+    where:{
 
-include:[
+      CollectorID:collectorId,
 
-{
-model:User,
-attributes:[
-"FullName",
-"Phone"
-]
-},
+    },
 
 
-{
-model:WasteCategory,
-attributes:[
-"CategoryName"
-]
+    include:[
+
+      Collector,
+
+      {
+
+        model:PickupRequest,
+
+        include:[
+          User,
+          WasteCategory
+        ],
+
+      },
+
+    ],
+
+
+  });
+
+
+
+  res.json(requests);
+
+
+
+ }catch(error){
+
+
+  console.log(error);
+
+
+
+  res.status(500).json({
+
+    message:error.message,
+
+  });
+
+
+ }
+
+};
+// ==========================
+// Complete Pickup
+// ==========================
+exports.completePickup = async(req,res)=>{
+
+ try{
+
+    const { AssignmentID } = req.body;
+
+
+    // Find Assignment
+
+    const assignment = await PickupAssignment.findByPk(
+      AssignmentID
+    );
+
+
+    if(!assignment){
+
+      return res.status(404).json({
+
+        message:"Assignment Not Found",
+
+      });
+
+    }
+
+
+
+    // Update Assignment Status
+
+    await assignment.update({
+
+      Status:"Completed",
+
+    });
+    // Change Collector Status back to Available
+
+const collector = await Collector.findByPk(
+  assignment.CollectorID
+);
+
+
+if(collector){
+
+  await collector.update({
+
+    Status:"Available"
+
+  });
+
 }
 
-]
-
-}
-
-]
-
-});
 
 
 
-res.status(200).json(assignments);
+    // Update Pickup Request Status
+
+    await PickupRequest.update(
+
+      {
+        Status:"Completed",
+      },
+
+      {
+        where:{
+          RequestID: assignment.RequestID,
+        },
+      }
+
+    );
 
 
 
-}
-catch(error){
+
+    res.json({
+
+      message:"Pickup Completed Successfully",
+
+    });
 
 
-res.status(500).json({
 
-message:error.message
-
-});
+ }catch(error){
 
 
-}
+    console.log(error);
+
+
+    res.status(500).json({
+
+      message:error.message,
+
+    });
+
+
+ }
 
 };

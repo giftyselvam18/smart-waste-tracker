@@ -1,77 +1,74 @@
 .assign-container{
-
-    min-height:80vh;
-    background:#f5f7fa;
+    min-height:100vh;
+    background:#f4f6f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
     padding:40px;
-
 }
-
-
-.assign-container h1{
-
-    margin-bottom:30px;
-    color:#1f2937;
-
-}
-
-
 
 .assign-card{
-
+    width:450px;
     background:white;
-    width:400px;
+    border-radius:12px;
     padding:30px;
-    border-radius:15px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.1);
-
+    box-shadow:0 8px 20px rgba(0,0,0,0.15);
 }
 
+.assign-card h1{
+    text-align:center;
+    margin-bottom:20px;
+    color:#2c3e50;
+}
 
-
-.assign-card h3{
-
+.pickup-id{
+    text-align:center;
+    font-size:18px;
     margin-bottom:25px;
-
 }
-
-
 
 .assign-card label{
-
     display:block;
     margin-bottom:10px;
     font-weight:bold;
-
 }
-
-
 
 .assign-card select{
-
     width:100%;
     padding:12px;
-    margin-bottom:20px;
+    font-size:16px;
+    border:1px solid #ccc;
     border-radius:8px;
-
+    margin-bottom:25px;
 }
 
-
-
-.assign-card button{
-
+.assign-btn{
     width:100%;
     padding:12px;
-    background:#2e7d32;
-    color:white;
     border:none;
     border-radius:8px;
+    background:#27ae60;
+    color:white;
+    font-size:17px;
     cursor:pointer;
-
+    margin-bottom:10px;
 }
 
+.assign-btn:hover{
+    background:#219150;
+}
 
-.assign-card button:hover{
+.cancel-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:#e74c3c;
+    color:white;
+    font-size:17px;
+    cursor:pointer;
+}
 
-    background:#1b5e20;
-
+.cancel-btn:hover{
+    background:#c0392b;
 }

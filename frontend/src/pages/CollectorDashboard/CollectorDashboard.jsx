@@ -16,7 +16,6 @@ function CollectorDashboard() {
 
 
   // Temporary collector id
-  // Later login user id use pannalam
   const collectorId = 2;
 
 
@@ -26,6 +25,7 @@ function CollectorDashboard() {
     fetchAssignedRequests();
 
   },[]);
+
 
 
 
@@ -56,6 +56,53 @@ function CollectorDashboard() {
       );
 
     }
+
+  };
+
+
+
+
+
+
+  // ==========================
+  // Complete Pickup
+  // ==========================
+
+  const completePickup = async(AssignmentID)=>{
+
+
+    try{
+
+
+      const response = await API.put(
+        "/pickups/complete",
+        {
+          AssignmentID: AssignmentID
+        }
+      );
+
+
+      alert(response.data.message);
+
+
+      // Refresh dashboard data
+
+      fetchAssignedRequests();
+
+
+
+    }
+    catch(error){
+
+
+      console.log(error);
+
+
+      alert("Pickup completion failed");
+
+
+    }
+
 
   };
 
@@ -134,6 +181,7 @@ return (
 
 
 
+
 {/* Main */}
 
 <main className="collector-main">
@@ -142,6 +190,7 @@ return (
 <h1>
 Waste Collector Dashboard
 </h1>
+
 
 
 
@@ -163,14 +212,19 @@ Assigned Pickups
 
 
 
+
+
 <div className="collector-card">
 
 <h2>
+
 {
 requests.filter(
 item=>item.Status==="Assigned"
 ).length
+
 }
+
 </h2>
 
 <p>
@@ -181,15 +235,21 @@ Pending
 
 
 
+
+
 <div className="collector-card">
 
 <h2>
+
 {
 requests.filter(
 item=>item.Status==="Completed"
 ).length
+
 }
+
 </h2>
+
 
 <p>
 Completed
@@ -207,12 +267,14 @@ Completed
 
 
 
+
 <div className="pickup-table">
 
 
 <h2>
 Assigned Pickup Requests
 </h2>
+
 
 
 
@@ -254,6 +316,11 @@ Status
 </th>
 
 
+<th>
+Action
+</th>
+
+
 </tr>
 
 
@@ -263,16 +330,20 @@ Status
 
 
 
+
+
 <tbody>
+
 
 
 {
 
-
 requests.length > 0 ?
 
 
+
 requests.map((item)=>(
+
 
 
 <tr key={item.AssignmentID}>
@@ -289,13 +360,15 @@ item.PickupRequest?.User?.FullName || "User"
 
 
 
+
 <td>
 
 {
-item.PickupRequest?.PickupAddress
+item.PickupRequest?.PickupAddress || "-"
 }
 
 </td>
+
 
 
 
@@ -308,6 +381,7 @@ item.PickupRequest?.WasteCategory?.CategoryName || "Waste"
 }
 
 </td>
+
 
 
 
@@ -327,13 +401,15 @@ Kg
 
 
 
+
 <td>
 
 {
-item.PickupRequest?.PickupDate
+item.PickupRequest?.PickupDate || "-"
 }
 
 </td>
+
 
 
 
@@ -349,7 +425,50 @@ item.Status
 
 
 
+
+
+
+
+<td>
+
+
+{
+
+item.Status==="Assigned" &&
+
+<button
+onClick={()=>completePickup(item.AssignmentID)}
+>
+
+Complete
+
+</button>
+
+}
+
+
+
+{
+
+item.Status==="Completed" &&
+
+<span>
+✔ Done
+</span>
+
+}
+
+
+
+</td>
+
+
+
+
+
+
 </tr>
+
 
 
 ))
@@ -357,10 +476,9 @@ item.Status
 
 :
 
-
 <tr>
 
-<td colSpan="6">
+<td colSpan="7">
 
 No Assigned Pickup Requests
 
@@ -372,6 +490,7 @@ No Assigned Pickup Requests
 }
 
 
+
 </tbody>
 
 
@@ -379,7 +498,10 @@ No Assigned Pickup Requests
 </table>
 
 
+
 </div>
+
+
 
 
 

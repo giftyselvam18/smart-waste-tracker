@@ -4,7 +4,6 @@ const { sequelize } = require("../config/db");
 const PickupAssignment = sequelize.define(
   "PickupAssignment",
   {
-
     AssignmentID: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -12,13 +11,11 @@ const PickupAssignment = sequelize.define(
       field: "AssignmentID",
     },
 
-
     RequestID: {
       type: DataTypes.INTEGER,
       allowNull: false,
       field: "RequestID",
     },
-
 
     CollectorID: {
       type: DataTypes.INTEGER,
@@ -26,27 +23,22 @@ const PickupAssignment = sequelize.define(
       field: "CollectorID",
     },
 
-
     AssignedDate: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      allowNull: true,
       field: "AssignedDate",
     },
-
 
     Status: {
       type: DataTypes.STRING,
       defaultValue: "Assigned",
       field: "Status",
     },
-
-
   },
   {
     tableName: "PickupAssignments",
     timestamps: false,
   }
 );
-
 
 module.exports = PickupAssignment;

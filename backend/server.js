@@ -79,7 +79,7 @@ const PORT = process.env.PORT || 5000;
 connectDB()
   .then(async () => {
 
-    await sequelize.sync({ alter: false });
+    await sequelize.sync({ alter: false});
 
     console.log("✅ Database Connected");
     console.log("✅ Models Loaded");

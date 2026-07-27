@@ -6,7 +6,6 @@ import API from "../../services/api";
 
 function PickupRequests() {
   const [requests, setRequests] = useState([]);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +22,7 @@ function PickupRequests() {
     }
   };
 
+  // Reject Request
   const updateStatus = async (id, status) => {
     try {
       await API.put(`/pickups/request/${id}`, {
@@ -30,7 +30,6 @@ function PickupRequests() {
       });
 
       alert(`Request ${status}`);
-
       fetchRequests();
     } catch (error) {
       console.log(error);
@@ -38,6 +37,7 @@ function PickupRequests() {
     }
   };
 
+  // Accept Request
   const acceptRequest = async (id) => {
     try {
       await API.put(`/pickups/request/${id}`, {
@@ -82,11 +82,9 @@ function PickupRequests() {
                 <tr key={request.RequestID}>
                   <td>{request.RequestID}</td>
 
-                  <td>{request.User?.FullName || "User"}</td>
+                  <td>{request.User?.FullName || "-"}</td>
 
-                  <td>
-                    {request.WasteCategory?.CategoryName || "Waste"}
-                  </td>
+                  <td>{request.WasteCategory?.CategoryName || "-"}</td>
 
                   <td>{request.Weight || "-"} Kg</td>
 
@@ -100,7 +98,7 @@ function PickupRequests() {
                     {request.WasteImage ? (
                       <img
                         src={`http://localhost:5000/uploads/${request.WasteImage}`}
-                        alt="waste"
+                        alt="Waste"
                         width="80"
                         height="80"
                       />
@@ -117,8 +115,15 @@ function PickupRequests() {
                       onClick={() =>
                         acceptRequest(request.RequestID)
                       }
+                      disabled={
+                        request.Status === "Accepted" ||
+                        request.Status === "Assigned"
+                      }
                     >
-                      Accept
+                      {request.Status === "Accepted" ||
+                      request.Status === "Assigned"
+                        ? "Accepted"
+                        : "Accept"}
                     </button>
 
                     <button
@@ -129,15 +134,20 @@ function PickupRequests() {
                           "Rejected"
                         )
                       }
+                      disabled={request.Status === "Rejected"}
                     >
-                      Reject
+                      {request.Status === "Rejected"
+                        ? "Rejected"
+                        : "Reject"}
                     </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="10">No Pickup Requests Found</td>
+                <td colSpan="10">
+                  No Pickup Requests Found
+                </td>
               </tr>
             )}
           </tbody>

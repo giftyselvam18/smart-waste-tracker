@@ -8,6 +8,7 @@ const pickupController = require("../controllers/pickupController");
 // Pickup Request
 // =========================
 
+
 router.post(
   "/request",
   pickupController.createPickupRequest
@@ -36,6 +37,7 @@ router.delete(
   "/request/:id",
   pickupController.deletePickupRequest
 );
+
 
 
 
@@ -71,6 +73,21 @@ router.delete(
 
 
 
+
+// =========================
+// Complete Pickup
+// =========================
+
+router.put(
+  "/complete",
+  pickupController.completePickup
+);
+
+
+
+
+
+
 // =========================
 // Collector Dashboard
 // =========================
@@ -80,6 +97,7 @@ router.get(
   "/collector/:id",
   pickupController.getCollectorRequests
 );
+
 
 
 
