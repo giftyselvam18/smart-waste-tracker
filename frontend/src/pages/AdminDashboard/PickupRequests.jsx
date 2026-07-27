@@ -52,7 +52,7 @@ function PickupRequests() {
   };
 
   return (
-    <>
+  <>
       <FeatureTopBar dashboardPath="/AdminDashboard" />
 
       <div className="pickup-container">

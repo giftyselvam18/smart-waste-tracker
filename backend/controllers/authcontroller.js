@@ -3,25 +3,38 @@ const { User, Admin, Collector } = require("../models");
 
 exports.register = async (req, res) => {
   try {
-    const { FullName, Username, Password, Email } = req.body;
+    const {
+      name,
+      username,
+      password,
+      email,
+      phone,
+      address
+    } = req.body;
 
     const user = await User.create({
-      FullName,
-      Username,
-      Password,
-      Email,
+      FullName: name,
+      Username: username,
+      Password: password,
+      Email: email,
+      Phone: phone,
+      Address: address,
     });
 
     res.status(201).json({
       message: "User registered successfully",
       user,
     });
+
   } catch (error) {
+    console.error("Register Error:", error);
+
     res.status(500).json({
       message: error.message,
     });
   }
 };
+
 
 exports.login = async (req, res) => {
   try {
