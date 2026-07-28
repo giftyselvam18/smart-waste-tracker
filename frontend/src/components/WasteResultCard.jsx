@@ -1,77 +1,69 @@
 import {
-FaRecycle,
-FaMapMarkerAlt,
-FaStore
-}
-from "react-icons/fa";
+  FaRecycle,
+  FaStore
+} from "react-icons/fa";
 
 import { useNavigate } from "react-router-dom";
 
 
-function WasteResultCard({result}){
+function WasteResultCard({ result }) {
 
 
-const navigate=useNavigate();
+  const navigate = useNavigate();
 
 
-return(
+  return (
 
-<div className="result-card">
-
-
-<h3>
-AI Result
-</h3>
+    <div className="result-card">
 
 
-<h2>
-{result.category}
-</h2>
+      <h3>
+        AI Result
+      </h3>
 
 
-<p>
+      <h2>
+        {result.category}
+      </h2>
 
-Confidence :
-<b>
- {result.confidence}%
-</b>
 
-</p>
+      <p>
+        Confidence :
+        <b>
+          {result.confidence}%
+        </b>
+      </p>
 
 
 
-<button
-onClick={()=>navigate("/RecyclingCenters")}
->
+      <button
+        onClick={() => navigate("/UserDashboard/RecyclingCenters")}
+      >
 
-<FaRecycle/>
+        <FaRecycle />
 
-Find Recycling Centers
+        Find Recycling Centers
 
-</button>
+      </button>
 
 
 
 
-<button
+      <button
+        onClick={() => navigate("/UserDashboard/ScrapDealers")}
+      >
 
-onClick={()=>navigate("/ScrapDealers")}
+        <FaStore />
 
->
+        Find Scrap Dealers
 
-<FaStore/>
-
-Find Scrap Dealers
-
-</button>
+      </button>
 
 
 
-</div>
+    </div>
 
-
-);
-
+  );
 
 }
 

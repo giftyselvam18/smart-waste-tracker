@@ -10,6 +10,9 @@ import Register from "../pages/Register/Register";
 import UserDashboard from "../pages/UserDashboard/UserDashboard";
 import Dashboard from "../pages/UserDashboard/Dashboard";
 import RequestPickup from "../pages/UserDashboard/RequestPickup";
+import AIWasteClassifier from "../pages/UserDashboard/AIWasteClassifier/AIWasteClassifier";
+    import RecyclingCenters from "../pages/UserDashboard/RecyclingCenters/RecyclingCenters";
+    import ScrapDealers from "../pages/UserDashboard/ScrapDealers/ScrapDealers";
 import TrackStatus from "../pages/UserDashboard/TrackStatus";
 import CollectionHistory from "../pages/UserDashboard/CollectionHistory";
 import Notifications from "../pages/UserDashboard/Notifications";
@@ -33,142 +36,105 @@ import RouteMap from "../pages/CollectorDashboard/RouteMap";
 import CollectorCollectionHistory from "../pages/CollectorDashboard/CollectorCollectionHistory";
 import CollectorProfile from "../pages/CollectorDashboard/CollectorProfile";
 
-
 import About from "../pages/About/About";
 
-function AppRoutes() {
+
+function AppRoutes(){
+
+return(
+
+<BrowserRouter>
+
+<Routes>
 
 
-  return (
+{/* Common */}
 
-    <BrowserRouter>
+<Route path="/" element={<Home/>}/>
 
-      <Routes>
+<Route path="/roles" element={<RoleSelection/>}/>
 
+<Route path="/login/:role" element={<Login/>}/>
 
-        {/* Home */}
-
-        <Route 
-          path="/" 
-          element={<Home />} 
-        />
+<Route path="/register" element={<Register/>}/>
 
 
-        <Route 
-          path="/roles" 
-          element={<RoleSelection />} 
-        />
+{/* User */}
+
+<Route path="/UserDashboard" element={<UserDashboard/>}/>
+
+<Route path="/UserDashboard/dashboard" element={<Dashboard/>}/>
+
+<Route path="/UserDashboard/request" element={<RequestPickup/>}/>
 
 
-        <Route 
-          path="/login/:role" 
-          element={<Login />} 
-        />
-
-
-        <Route 
-          path="/register" 
-          element={<Register />} 
-        />
-
-
-
-
-        {/* User Routes */}
-
-
-        <Route 
-          path="/UserDashboard" 
-          element={<UserDashboard />} 
-        />
-
-
-        <Route 
-          path="/UserDashboard/dashboard" 
-          element={<Dashboard />} 
-        />
-
-
-        <Route 
-          path="/UserDashboard/request" 
-          element={<RequestPickup />} 
-        />
-
-
-        <Route 
-          path="/UserDashboard/track" 
-          element={<TrackStatus />} 
-        />
-
-
-        <Route 
-          path="/UserDashboard/history" 
-          element={<CollectionHistory />} 
-        />
-
-
-        <Route 
-          path="/UserDashboard/notifications" 
-          element={<Notifications />} 
-        />
-
-
-        <Route 
-          path="/UserDashboard/profile" 
-          element={<Profile />} 
-        />
-
-
-
-
-
-        {/* Admin Routes */}
-
-
-        <Route 
-          path="/AdminDashboard" 
-          element={<AdminDashboard />} 
-        />
-
-
-        <Route 
-          path="/admin/users" 
-          element={<ManageUsers />} 
-        />
-
-
-        <Route 
-          path="/admin/collectors" 
-          element={<ManageCollectors />} 
-        />
-
-
-        <Route 
-          path="/admin/pickups" 
-          element={<PickupRequests />} 
-        />
-
-
-        <Route 
-          path="/admin/areas" 
-          element={<CollectionAreas />} 
-        />
-        <Route
-  path="/admin/assign"
-  element={<AssignCollector />}
+<Route 
+path="/UserDashboard/ai-classifier" 
+element={<AIWasteClassifier/>}
+/>
+<Route
+ path="/UserDashboard/RecyclingCenters"
+ element={<RecyclingCenters />}
 />
 
-  <Route path="/CollectorDashboard"element={<CollectorDashboard />} />
-   <Route path="/collector/pickups" element={<AssignedPickups />} />
-   <Route path="/collector/today" element={<TodaysCollection />} />
-   <Route path="/collector/map" element={<RouteMap />} />
-   <Route path="/collector/history" element={<CollectorCollectionHistory />} />
-   <Route path="/collector/profile" element={<CollectorProfile />} />
-  <Route path="/about" element={<About />} />
-</Routes>
-    </BrowserRouter>
 
-  );
+<Route
+ path="/UserDashboard/ScrapDealers"
+ element={<ScrapDealers />}
+/>
+
+
+<Route path="/UserDashboard/track" element={<TrackStatus/>}/>
+
+<Route path="/UserDashboard/history" element={<CollectionHistory/>}/>
+
+<Route path="/UserDashboard/notifications" element={<Notifications/>}/>
+
+<Route path="/UserDashboard/profile" element={<Profile/>}/>
+
+
+
+{/* Admin */}
+
+<Route path="/AdminDashboard" element={<AdminDashboard/>}/>
+
+<Route path="/admin/users" element={<ManageUsers/>}/>
+
+<Route path="/admin/collectors" element={<ManageCollectors/>}/>
+
+<Route path="/admin/pickups" element={<PickupRequests/>}/>
+
+<Route path="/admin/areas" element={<CollectionAreas/>}/>
+
+<Route path="/admin/assign" element={<AssignCollector/>}/>
+
+
+
+{/* Collector */}
+
+<Route path="/CollectorDashboard" element={<CollectorDashboard/>}/>
+
+<Route path="/collector/pickups" element={<AssignedPickups/>}/>
+
+<Route path="/collector/today" element={<TodaysCollection/>}/>
+
+<Route path="/collector/map" element={<RouteMap/>}/>
+
+<Route path="/collector/history" element={<CollectorCollectionHistory/>}/>
+
+<Route path="/collector/profile" element={<CollectorProfile/>}/>
+
+
+
+<Route path="/about" element={<About/>}/>
+
+
+</Routes>
+
+
+</BrowserRouter>
+
+)
 
 }
 

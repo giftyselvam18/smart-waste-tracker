@@ -6,6 +6,8 @@ import WasteResultCard from "../../../components/WasteResultCard";
 import { classifyWaste } from "../../../services/aiService";
 
 import { FaRobot, FaRecycle } from "react-icons/fa";
+
+
 function AIWasteClassifier() {
 
   const [image, setImage] = useState(null);
@@ -29,7 +31,7 @@ function AIWasteClassifier() {
 
       setResult(response);
 
-    } 
+    }
     catch(error){
 
       console.log(error);
@@ -49,7 +51,6 @@ function AIWasteClassifier() {
 
     <div className="ai-page">
 
-
       <div className="ai-card">
 
 
@@ -65,17 +66,15 @@ function AIWasteClassifier() {
             <p>
               Upload waste image and identify recyclable category
             </p>
-          </div>
 
+          </div>
 
         </div>
 
 
-
-        <UploadImage
+        <UploadImage 
           setImage={setImage}
         />
-
 
 
         {
@@ -90,10 +89,8 @@ function AIWasteClassifier() {
 
             {
               loading
-              ?
-              "Analyzing..."
-              :
-              "Classify Waste"
+              ? "Analyzing..."
+              : "Classify Waste"
             }
 
           </button>
@@ -101,20 +98,15 @@ function AIWasteClassifier() {
         }
 
 
-
         {
           result &&
-
-          <WasteResultCard
+          <WasteResultCard 
             result={result}
           />
-
         }
 
 
-
       </div>
-
 
     </div>
 

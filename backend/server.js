@@ -16,7 +16,6 @@ const collectorRoutes = require("./routes/collectorRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const pickupRoutes = require("./routes/pickupRoutes");
 
-
 // Load Models & Associations
 require("./models");
 
@@ -26,6 +25,17 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// ai
+app.use(
+"/api/ai",
+aiRoutes
+);
+app.use(
+"/uploads",
+express.static("uploads")
+);
+
 
 
 // Test Route
@@ -81,7 +91,7 @@ const PORT = process.env.PORT || 5000;
 connectDB()
   .then(async () => {
 
-    await sequelize.sync({ alter: false});
+    await sequelize.sync({ alter: false });
 
     console.log("✅ Database Connected");
     console.log("✅ Models Loaded");
