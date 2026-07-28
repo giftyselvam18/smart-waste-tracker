@@ -10,7 +10,6 @@ import {
   FaMapMarkerAlt,
   FaCalendarAlt,
   FaClock,
-  FaStickyNote,
   FaUpload,
   FaPaperPlane,
   FaTruck,
@@ -22,50 +21,123 @@ import pickupImg from "../../assets/pickup.png";
 function RequestPickup() {
 
   const [formData, setFormData] = useState({
+
     wasteType: "",
     weight: "",
     pickupDate: "",
     pickupTime: "",
     pickupAddress: "",
     notes: "",
+
   });
+
 
 
   const handleChange = (e) => {
 
     setFormData({
+
       ...formData,
+
       [e.target.name]: e.target.value,
+
     });
 
   };
+
 
 
   const handleSubmit = async (e) => {
 
     e.preventDefault();
 
+
     try {
 
-      const response = await submitPickupRequest(formData);
 
-      alert(
-        response.message ||
-        "Pickup Request Submitted Successfully!"
+      const user = JSON.parse(localStorage.getItem("user"));
+
+
+      console.log("Logged User:", user);
+
+
+
+      if (!user || (!user.id && !user.UserID)) {
+
+
+        alert("User not logged in. Please login again.");
+
+        return;
+
+
+      }
+
+
+
+      const requestData = {
+
+
+        UserID: user.id || user.UserID,
+
+
+        wasteType: formData.wasteType,
+
+        weight: formData.weight,
+
+        pickupDate: formData.pickupDate,
+
+        pickupTime: formData.pickupTime,
+
+        pickupAddress: formData.pickupAddress,
+
+        notes: formData.notes,
+
+
+      };
+
+
+
+      console.log(
+        "Sending Pickup Data:",
+        requestData
       );
 
 
+
+      const response = await submitPickupRequest(requestData);
+
+
+
+      alert(
+
+        response.message ||
+
+        "Pickup Request Submitted Successfully!"
+
+      );
+
+
+
       setFormData({
+
         wasteType: "",
+
         weight: "",
+
         pickupDate: "",
+
         pickupTime: "",
+
         pickupAddress: "",
+
         notes: "",
+
       });
 
 
+
     } catch(error) {
+
 
       console.log(
         "Pickup Error:",
@@ -73,9 +145,15 @@ function RequestPickup() {
       );
 
 
+
       alert(
+
+        error.response?.data?.message ||
+
         "Failed to submit pickup request"
+
       );
+
 
     }
 
@@ -87,6 +165,7 @@ function RequestPickup() {
 
     <>
 
+
       <FeatureTopBar dashboardPath="/UserDashboard" />
 
 
@@ -94,10 +173,15 @@ function RequestPickup() {
 
 
         <img
+
           src={pickupImg}
+
           alt="Pickup Background"
+
           className="background-image"
+
         />
+
 
 
         <div className="overlay">
@@ -113,8 +197,11 @@ function RequestPickup() {
 
 
                 <div className="pickup-icon">
+
                   <FaTruck />
+
                 </div>
+
 
 
                 <div>
@@ -151,9 +238,13 @@ function RequestPickup() {
 
 
                     <select
+
                       name="wasteType"
+
                       value={formData.wasteType}
+
                       onChange={handleChange}
+
                     >
 
                       <option value="">
@@ -190,9 +281,7 @@ function RequestPickup() {
 
                   </div>
 
-
                 </div>
-
 
 
 
@@ -214,9 +303,13 @@ function RequestPickup() {
                       <input
 
                         type="number"
+
                         name="weight"
+
                         placeholder="Enter Weight"
+
                         value={formData.weight}
+
                         onChange={handleChange}
 
                       />
@@ -224,7 +317,6 @@ function RequestPickup() {
                     </div>
 
                   </div>
-
 
 
 
@@ -245,12 +337,14 @@ function RequestPickup() {
                       <input
 
                         type="date"
+
                         name="pickupDate"
+
                         value={formData.pickupDate}
+
                         onChange={handleChange}
 
                       />
-
 
                     </div>
 
@@ -263,11 +357,11 @@ function RequestPickup() {
 
 
 
-
                 <div className="row">
 
 
                   <div className="form-group">
+
 
                     <label>
                       Pickup Time
@@ -282,18 +376,19 @@ function RequestPickup() {
                       <input
 
                         type="time"
+
                         name="pickupTime"
+
                         value={formData.pickupTime}
+
                         onChange={handleChange}
 
                       />
-
 
                     </div>
 
 
                   </div>
-
 
 
 
@@ -315,50 +410,78 @@ function RequestPickup() {
                       <input
 
                         type="text"
+
                         name="pickupAddress"
+
                         placeholder="Enter Pickup Address"
+
                         value={formData.pickupAddress}
+
                         onChange={handleChange}
 
                       />
 
 
                     </div>
+
+
                   </div>
+
+
+                </div>
+
+
+
+
+                <div className="form-group">
+
+
+                  <label>
+                    Upload Waste Image (Optional)
+                  </label>
+
+
+                  <div className="upload-box">
+
+                    <FaUpload />
+
+
+                    <input
+
+                      type="file"
+
+                      accept="image/*"
+
+                    />
+
+
                   </div>
-     <div className="form-group">
 
-  <label>
-    Upload Waste Image <span>(Optional)</span>
-  </label>
 
-  <div className="upload-box">
+                </div>
 
-    <FaUpload />
 
-    <input 
-      type="file"
-      accept="image/*"
-    />
 
-  </div>
-
-</div>
 
                 <button
+
                   type="submit"
+
                   className="submit-btn"
+
                 >
 
                   <FaPaperPlane />
 
                   Submit Pickup Request
 
+
                 </button>
 
 
 
               </form>
+
 
 
             </div>

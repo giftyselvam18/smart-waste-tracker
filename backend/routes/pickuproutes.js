@@ -8,7 +8,6 @@ const pickupController = require("../controllers/pickupController");
 // Pickup Request
 // =========================
 
-
 router.post(
   "/request",
   pickupController.createPickupRequest
@@ -41,12 +40,9 @@ router.delete(
 
 
 
-
 // =========================
 // Pickup Assignment
-<<<<<<< HEAD
 // =========================
-
 
 router.post(
   "/assign",
@@ -74,25 +70,9 @@ router.delete(
 
 
 
-
-// =========================
-// Complete Pickup
-// =========================
-
-router.put(
-  "/complete",
-  pickupController.completePickup
-);
-
-
-
-
-
-
 // =========================
 // Collector Dashboard
 // =========================
-
 
 router.get(
   "/collector/:id",
@@ -101,44 +81,33 @@ router.get(
 
 
 
-=======
-router.post("/assign", pickupController.assignCollector);
-router.get("/assign", pickupController.getAllAssignments);
-router.get("/assign/:id", pickupController.getAssignmentById);
-router.delete("/assign/:id", pickupController.deleteAssignment);
-router.put("/start/:id", pickupController.startPickup);
+
+// =========================
+// Pickup Status
+// =========================
+
+router.put(
+ "/start/:RequestID",
+ pickupController.startPickup
+);
+
 router.put(
   "/complete/:id",
   pickupController.completePickup
 );
+
+
+
+
+// =========================
+// Today's Collection
+// =========================
+
 router.get(
- "/today-collection",
- pickupController.getTodayCollection
+  "/today-collection",
+  pickupController.getTodayCollection
 );
-exports.getTodayCollection = async (req, res) => {
-  try {
->>>>>>> 693b0d7 (Added today collection and collector profile features)
 
-    const today = new Date().toISOString().split("T")[0];
 
-    const collections = await PickupRequest.findAll({
-      where: {
-        Status: "Completed",
-        PickupDate: today
-      }
-    });
 
-    res.status(200).json({
-      totalCollection: collections.length,
-      collections
-    });
-
-  } catch(error) {
-
-    res.status(500).json({
-      message: error.message
-    });
-
-  }
-};
 module.exports = router;

@@ -55,10 +55,11 @@ exports.login = async (req, res) => {
         return res.status(401).json({ message: "Invalid password" });
 
       payload = {
-        id: user.UserID,
-        role: "user",
-        username: user.Username,
-      };
+  UserID: user.UserID,
+  id: user.UserID,
+  role: "user",
+  username: user.Username,
+};
     }
 
     else if (role === "collector") {

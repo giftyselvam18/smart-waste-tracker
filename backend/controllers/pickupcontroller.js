@@ -6,33 +6,86 @@ const {
   WasteCategory,
 } = require("../models");
 
-
 // ==========================
 // Create Pickup Request
 // ==========================
 exports.createPickupRequest = async (req, res) => {
   try {
 
-    const pickup = await PickupRequest.create(req.body);
+    console.log("========== REQUEST BODY ==========");
+    console.log(req.body);
+
+    // Waste Type -> CategoryID Mapping
+    const categoryMap = {
+      Plastic: 1,
+      Paper: 2,
+      Metal: 3,
+      Glass: 4,
+      Organic: 5,
+      "E-Waste": 6,
+    };
+
+    const pickupData = {
+      UserID: req.body.UserID,
+      CategoryID: categoryMap[req.body.wasteType],
+      PickupAddress: req.body.pickupAddress,
+      PickupDate: req.body.pickupDate,   // ✅ Add this back
+      PickupTime: req.body.pickupTime,
+      Weight: req.body.weight,
+      Description: req.body.notes,
+      Status: "Pending",
+      // RequestDate வேண்டாம். SQL Server GETDATE() default use ஆகும்.
+    };
+
+    console.log("========== DATA TO INSERT ==========");
+    console.log(pickupData);
+
+    const pickup = await PickupRequest.create(pickupData);
 
     res.status(201).json({
       message: "Pickup Request Created Successfully",
-      pickup
+      pickup,
     });
+
+  } catch (error) {
+
+    console.error("========== FULL ERROR ==========");
+    console.error(error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+
+  }
+};
+// ==========================
+// Get All Pickup Requests
+// ==========================
+exports.getAllPickupRequests = async (req, res) => {
+  try {
+
+    const requests = await PickupRequest.findAll({
+      include: [
+        User,
+        WasteCategory,
+      ],
+      order: [
+        ["RequestID", "DESC"],
+      ],
+    });
+
+    res.status(200).json(requests);
 
   } catch (error) {
 
     console.error(error);
 
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
 
   }
 };
-
-
-
 // ==========================
 // Get All Pickup Requests
 // ==========================
@@ -213,151 +266,153 @@ exports.deletePickupRequest = async(req,res)=>{
 // ==========================
 // Assign Collector
 // ==========================
-exports.assignCollector = async(req,res)=>{
+exports.assignCollector = async (req, res) => {
 
-try{
+  try {
 
+    const {
+      RequestID,
+      CollectorID
+    } = req.body;
 
-const {
-  RequestID,
-  CollectorID
-}=req.body;
 
+    console.log("Assign Data:", req.body);
 
 
-// Check Pickup
+    // Check RequestID and CollectorID
+    if (!RequestID || !CollectorID) {
 
-const pickup = await PickupRequest.findByPk(
-  RequestID
-);
+      return res.status(400).json({
+        message: "RequestID and CollectorID are required"
+      });
 
+    }
 
-if(!pickup){
 
- return res.status(404).json({
-   message:"Pickup Request Not Found"
- });
 
-}
+    // Check Pickup Request
 
+    const pickup = await PickupRequest.findByPk(
+      RequestID
+    );
 
 
+    if (!pickup) {
 
-// Check Collector
+      return res.status(404).json({
+        message: "Pickup Request Not Found"
+      });
 
-const collector = await Collector.findByPk(
-  CollectorID
-);
+    }
 
 
-if(!collector){
 
- return res.status(404).json({
-   message:"Collector Not Found"
- });
+    // Check Collector
 
-}
+    const collector = await Collector.findByPk(
+      CollectorID
+    );
 
 
+    if (!collector) {
 
+      return res.status(404).json({
+        message: "Collector Not Found"
+      });
 
-// Check Already Assigned
+    }
 
-const existing = await PickupAssignment.findOne({
 
- where:{
-   RequestID,
-   Status:"Assigned"
- }
 
-});
+    // Check Already Assigned
 
+    const existingAssignment = await PickupAssignment.findOne({
 
+      where: {
 
-if(existing){
+        RequestID: Number(RequestID),
 
- return res.status(400).json({
-   message:"Pickup Already Assigned"
- });
+        Status: "Assigned"
 
-}
+      }
 
+    });
 
 
 
+    if (existingAssignment) {
 
-// Create Assignment
+      return res.status(400).json({
 
-const assignment = await PickupAssignment.create({
+        message: "Pickup Already Assigned"
 
- RequestID,
+      });
 
- CollectorID,
+    }
 
- AssignedDate:new Date(),
 
- Status:"Assigned"
 
-});
+    // Create Assignment
+    // AssignedDate removed because SQL Server datetime conversion issue
 
+    const assignment = await PickupAssignment.create({
 
+      RequestID: Number(RequestID),
 
+      CollectorID: Number(CollectorID),
 
-// Update Pickup Status
+      Status: "Assigned"
 
-await pickup.update({
+    });
 
- Status:"Assigned"
 
-});
 
+    // Update Pickup Status
 
+    await pickup.update({
 
+      Status: "Assigned"
 
-// Update Collector Status
+    });
 
-await collector.update({
 
- Status:"Busy"
 
-});
+    // Update Collector Status
 
+    await collector.update({
 
+      Status: "Busy"
 
+    });
 
 
-res.status(201).json({
 
- message:"Collector Assigned Successfully",
+    res.status(201).json({
 
- assignment
+      message: "Collector Assigned Successfully",
 
-});
+      assignment
 
+    });
 
 
-}catch(error){
 
-console.error(error);
+  } catch (error) {
 
-res.status(500).json({
 
- message:error.message
+    console.error("ASSIGN ERROR:", error);
 
-});
 
+    res.status(500).json({
 
-}
+      message: error.message
 
+    });
+
+
+  }
 
 };
-
-
-
-
-
-
-
 // ==========================
 // Get All Assignments
 // ==========================
@@ -616,62 +671,84 @@ message:error.message
 // ==========================
 // Start Pickup
 // ==========================
-exports.startPickup = async(req,res)=>{
+exports.startPickup = async (req, res) => {
+
+  try {
+
+    const { RequestID } = req.params;
 
 
-try{
-
-
-const pickup = await PickupRequest.findByPk(
- req.params.id
-);
-
-
-
-if(!pickup){
-
-return res.status(404).json({
-
-message:"Pickup Request Not Found"
-
-});
-
-}
+    console.log("Starting Pickup ID:", RequestID);
 
 
 
+    // Check Pickup Request
 
-await pickup.update({
-
-Status:"On the Way"
-
-});
+    const pickup = await PickupRequest.findByPk(RequestID);
 
 
+    if (!pickup) {
 
-res.status(200).json({
+      return res.status(404).json({
+        message: "Pickup Request Not Found"
+      });
 
-message:"Pickup Started Successfully",
-
-pickup
-
-});
+    }
 
 
 
-}catch(error){
+    // Update Pickup Status
 
-res.status(500).json({
+    await pickup.update({
 
-message:error.message
+      Status: "Started"
 
-});
+    });
 
-}
 
+
+    // Update Assignment Status
+
+    await PickupAssignment.update(
+
+      {
+        Status: "Started"
+      },
+
+      {
+        where: {
+          RequestID: RequestID
+        }
+      }
+
+    );
+
+
+
+    res.status(200).json({
+
+      message: "Pickup Started Successfully"
+
+    });
+
+
+
+  } catch (error) {
+
+
+    console.log("START PICKUP ERROR:", error);
+
+
+    res.status(500).json({
+
+      message: error.message
+
+    });
+
+
+  }
 
 };
-
 
 
 
@@ -682,115 +759,45 @@ message:error.message
 // ==========================
 // Complete Pickup
 // ==========================
-exports.completePickup = async(req,res)=>{
+exports.completePickup = async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
 
 
-try{
+    const pickup = await PickupRequest.findByPk(id);
 
 
-const pickup = await PickupRequest.findByPk(
- req.params.id
-);
+    if (!pickup) {
+      return res.status(404).json({
+        message: "Pickup Request Not Found"
+      });
+    }
 
 
-
-if(!pickup){
-
-return res.status(404).json({
-
-message:"Pickup Request Not Found"
-
-});
-
-}
+    await pickup.update({
+      Status: "Completed"
+    });
 
 
+    res.status(200).json({
+      message: "Pickup Completed Successfully",
+      pickup
+    });
 
 
-await pickup.update({
+  } catch(error) {
 
-Status:"Completed"
+    console.error("COMPLETE PICKUP ERROR:", error);
 
-});
+    res.status(500).json({
+      message: error.message
+    });
 
-
-
-
-
-const assignment = await PickupAssignment.findOne({
-
-where:{
- RequestID:req.params.id
-}
-
-});
-
-
-
-if(assignment){
-
-
-await assignment.update({
-
-Status:"Completed"
-
-});
-
-
-
-const collector = await Collector.findByPk(
- assignment.CollectorID
-);
-
-
-
-if(collector){
-
-await collector.update({
-
-Status:"Available"
-
-});
-
-}
-
-
-}
-
-
-
-
-res.status(200).json({
-
-message:"Pickup Completed Successfully",
-
-pickup
-
-});
-
-
-
-}catch(error){
-
-
-res.status(500).json({
-
-message:error.message
-
-});
-
-
-}
-
+  }
 
 };
-
-
-
-
-
-
-
 
 // ==========================
 // Today's Collection
