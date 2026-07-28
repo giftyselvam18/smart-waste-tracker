@@ -28,7 +28,10 @@ function Login() {
 
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", "user");
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem(
+          "user",
+          JSON.stringify(response.data.user)
+        );
 
         alert("User Login Successful");
         navigate("/UserDashboard");
@@ -64,6 +67,7 @@ function Login() {
         alert("Collector Login Successful");
         navigate("/CollectorDashboard");
       }
+
     } catch (error) {
       console.log("Login Error:", error.response);
 
@@ -74,18 +78,27 @@ function Login() {
     }
   };
 
+
   return (
     <div className="login-container">
+
       <div className="login-card">
-        <h2>{role?.toUpperCase()} LOGIN</h2>
+
+        <h2>
+          {role ? role.toUpperCase() : "LOGIN"}
+        </h2>
+
 
         <form onSubmit={handleLogin}>
+
           {role === "collector" ? (
             <input
               type="text"
               placeholder="Collector Code"
               value={collectorCode}
-              onChange={(e) => setCollectorCode(e.target.value)}
+              onChange={(e) =>
+                setCollectorCode(e.target.value)
+              }
               required
             />
           ) : (
@@ -93,39 +106,58 @@ function Login() {
               type="text"
               placeholder="Username"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) =>
+                setUsername(e.target.value)
+              }
               required
             />
           )}
+
 
           <input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
             required
           />
+
 
           {role === "admin" && (
             <input
               type="text"
               placeholder="Security Code"
               value={securityCode}
-              onChange={(e) => setSecurityCode(e.target.value)}
+              onChange={(e) =>
+                setSecurityCode(e.target.value)
+              }
               required
             />
           )}
 
-          <button type="submit">Login</button>
 
-          <p className="register-link">
-            Don't have an account?{" "}
-            <span onClick={() => navigate("/register")}>
-              Register
-            </span>
-          </p>
+          <button type="submit">
+            Login
+          </button>
+
+
+          {role === "user" && (
+            <p className="register-link">
+              Don't have an account?{" "}
+              <span
+                onClick={() => navigate("/register")}
+              >
+                Register
+              </span>
+            </p>
+          )}
+
         </form>
+
       </div>
+
     </div>
   );
 }

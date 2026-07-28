@@ -16,10 +16,14 @@ export const submitPickupRequest = async (data) => {
 
         return response.data;
 
+    } catch(error) {
 
-    } catch(error){
+        console.log(
+            "Submit Pickup API Error:",
+            error.response?.data || error.message
+        );
 
-        throw error.response?.data || error.message;
+        throw error;
 
     }
 

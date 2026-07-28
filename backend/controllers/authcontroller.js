@@ -108,6 +108,15 @@ exports.login = async (req, res) => {
 
       }
 
+
+      payload = {
+  UserID: user.UserID,
+  id: user.UserID,
+  role: "user",
+  username: user.Username,
+};
+
+
     }
 
 

@@ -51,8 +51,6 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/collectors", collectorRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/pickups", pickupRoutes);
-
-
 // HTTP Server
 const server = http.createServer(app);
 
