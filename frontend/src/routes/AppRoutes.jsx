@@ -36,8 +36,6 @@ import CollectorProfile from "../pages/CollectorDashboard/CollectorProfile";
 
 import About from "../pages/About/About";
 
-
-
 function AppRoutes() {
 
 
@@ -155,72 +153,19 @@ function AppRoutes() {
           path="/admin/areas" 
           element={<CollectionAreas />} 
         />
+        <Route
+  path="/admin/assign"
+  element={<AssignCollector />}
+/>
 
-
-        {/* Assign Collector Page */}
-        <Route 
-          path="/admin/assign/:id" 
-          element={<AssignCollector />} 
-        />
-
-
-
-
-
-
-        {/* Collector Routes */}
-
-
-        <Route 
-          path="/CollectorDashboard"
-          element={<CollectorDashboard />} 
-        />
-
-
-        <Route 
-          path="/collector/pickups" 
-          element={<AssignedPickups />} 
-        />
-
-
-        <Route 
-          path="/collector/today" 
-          element={<TodaysCollection />} 
-        />
-
-
-        <Route 
-          path="/collector/map" 
-          element={<RouteMap />} 
-        />
-
-
-        <Route 
-          path="/collector/history" 
-          element={<CollectorCollectionHistory />} 
-        />
-
-
-        <Route 
-          path="/collector/profile" 
-          element={<CollectorProfile />} 
-        />
-
-
-
-
-
-        {/* About */}
-
-        <Route 
-          path="/about" 
-          element={<About />} 
-        />
-
-
-      </Routes>
-
-
+  <Route path="/CollectorDashboard"element={<CollectorDashboard />} />
+   <Route path="/collector/pickups" element={<AssignedPickups />} />
+   <Route path="/collector/today" element={<TodaysCollection />} />
+   <Route path="/collector/map" element={<RouteMap />} />
+   <Route path="/collector/history" element={<CollectorCollectionHistory />} />
+   <Route path="/collector/profile" element={<CollectorProfile />} />
+  <Route path="/about" element={<About />} />
+</Routes>
     </BrowserRouter>
 
   );

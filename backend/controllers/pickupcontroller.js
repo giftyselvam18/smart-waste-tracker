@@ -13,26 +13,40 @@ const {
 exports.createPickupRequest = async (req, res) => {
   try {
 
-    const pickup = await PickupRequest.create(req.body);
+    // Waste Type -> CategoryID Mapping
+    const categoryMap = {
+      Plastic: 1,
+      Paper: 2,
+      Metal: 3,
+      Glass: 4,
+      Organic: 5,
+      "E-Waste": 6,
+    };
+
+    const pickup = await PickupRequest.create({
+      UserID: req.body.UserID, // login user id
+      CategoryID: categoryMap[req.body.wasteType],
+      PickupAddress: req.body.pickupAddress,
+      PickupDate: req.body.pickupDate,
+      PickupTime: req.body.pickupTime,
+      Weight: req.body.weight,
+      Description: req.body.notes,
+      Status: "Pending",
+      RequestDate: new Date(),
+    });
 
     res.status(201).json({
       message: "Pickup Request Created Successfully",
-      pickup
+      pickup,
     });
 
   } catch (error) {
-
-    console.error(error);
-
+    console.log(error);
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
-
   }
 };
-
-
-
 // ==========================
 // Get All Pickup Requests
 // ==========================

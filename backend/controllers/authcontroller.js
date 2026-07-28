@@ -2,7 +2,9 @@ const jwt = require("jsonwebtoken");
 const { User, Admin, Collector } = require("../models");
 
 exports.register = async (req, res) => {
+
   try {
+
     const {
       name,
       username,
@@ -12,119 +14,258 @@ exports.register = async (req, res) => {
       address
     } = req.body;
 
+
     const user = await User.create({
+
       FullName: name,
       Username: username,
       Password: password,
       Email: email,
       Phone: phone,
-      Address: address,
+      Address: address
+
     });
+
 
     res.status(201).json({
+
       message: "User registered successfully",
-      user,
+      user
+
     });
 
-  } catch (error) {
+
+  } catch(error) {
+
     console.error("Register Error:", error);
 
     res.status(500).json({
-      message: error.message,
+
+      message: error.message
+
     });
+
   }
+
 };
 
 
-exports.login = async (req, res) => {
-  try {
-    const { username, password, role, securityCode } = req.body;
 
-    let user = null;
+
+
+// LOGIN WITHOUT ROLE
+
+exports.login = async (req, res) => {
+
+  try {
+
+    const {
+      username,
+      collectorCode,
+      adminUsername,
+      password,
+      securityCode
+    } = req.body;
+
+
+    let account = null;
     let payload = {};
 
-    if (role === "user") {
-      user = await User.findOne({
-        where: { Username: username },
+
+
+    // =====================
+    // USER LOGIN
+    // username + password
+    // =====================
+
+    if (username) {
+
+      account = await User.findOne({
+        where: {
+          Username: username
+        }
       });
 
-      if (!user)
-        return res.status(404).json({ message: "User not found" });
 
-      if (user.Password !== password)
-        return res.status(401).json({ message: "Invalid password" });
+      if (account) {
 
-      payload = {
-        id: user.UserID,
-        role: "user",
-        username: user.Username,
-      };
+        if (account.Password !== password) {
+
+          return res.status(401).json({
+            message: "Invalid password"
+          });
+
+        }
+
+
+        payload = {
+
+          id: account.UserID,
+          username: account.Username,
+          type: "user"
+
+        };
+
+      }
+
     }
 
-    else if (role === "collector") {
-      user = await Collector.findOne({
-        where: { CollectorCode: username },
+
+
+    // =====================
+    // COLLECTOR LOGIN
+    // collectorCode + password
+    // =====================
+
+    if (!account && collectorCode) {
+
+
+      account = await Collector.findOne({
+
+        where: {
+          CollectorCode: collectorCode
+        }
+
       });
 
-      if (!user)
-        return res.status(404).json({ message: "Collector not found" });
 
-      if (user.Password !== password)
-        return res.status(401).json({ message: "Invalid password" });
 
-      payload = {
-        id: user.CollectorID,
-        role: "collector",
-        username: user.CollectorCode,
-      };
+      if (account) {
+
+
+        if (account.Password !== password) {
+
+          return res.status(401).json({
+            message: "Invalid password"
+          });
+
+        }
+
+
+
+        payload = {
+
+          id: account.CollectorID,
+          username: account.CollectorCode,
+          type: "collector"
+
+        };
+
+
+      }
+
     }
 
-    else if (role === "admin") {
-      user = await Admin.findOne({
-        where: { AdminUsername: username },
+
+
+
+    // =====================
+    // ADMIN LOGIN
+    // adminUsername + password + securityCode
+    // =====================
+
+    if (!account && adminUsername) {
+
+
+      account = await Admin.findOne({
+
+        where: {
+          AdminUsername: adminUsername
+        }
+
       });
 
-      if (!user)
-        return res.status(404).json({ message: "Admin not found" });
 
-      if (user.Password !== password)
-        return res.status(401).json({ message: "Invalid password" });
 
-      if (user.SecurityCode !== securityCode)
-        return res.status(401).json({ message: "Invalid security code" });
+      if (account) {
 
-      payload = {
-        id: user.AdminID,
-        role: "admin",
-        username: user.AdminUsername,
-      };
+
+        if (account.Password !== password) {
+
+          return res.status(401).json({
+            message: "Invalid password"
+          });
+
+        }
+
+
+
+        if (account.SecurityCode !== securityCode) {
+
+          return res.status(401).json({
+            message: "Invalid security code"
+          });
+
+        }
+
+
+
+        payload = {
+
+          id: account.AdminID,
+          username: account.AdminUsername,
+          type: "admin"
+
+        };
+
+
+      }
+
     }
 
-    else {
-      return res.status(400).json({
-        message: "Invalid role",
+
+
+    if (!account) {
+
+      return res.status(404).json({
+
+        message: "Account not found"
+
       });
+
     }
+
+
 
     const token = jwt.sign(
+
       payload,
+
       process.env.JWT_SECRET,
+
       {
-        expiresIn: process.env.JWT_EXPIRES_IN,
+        expiresIn: process.env.JWT_EXPIRES_IN
       }
+
     );
 
+
+
     res.status(200).json({
+
       message: "Login successful",
+
       token,
-      user: payload,
+
+      user: payload
+
     });
 
-  } catch (error) {
-    console.error(error);
+
+
+  } catch(error) {
+
+
+    console.error("Login Error:", error);
+
 
     res.status(500).json({
-      message: error.message,
+
+      message:error.message
+
     });
+
+
   }
+
 };

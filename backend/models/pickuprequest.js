@@ -4,81 +4,47 @@ const { sequelize } = require("../config/db");
 const PickupRequest = sequelize.define(
   "PickupRequest",
   {
-    RequestID: {
+    requestId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       field: "RequestID",
     },
 
-    UserID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      field: "UserID",
-    },
-
-    CategoryID: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      field: "CategoryID",
-    },
-
-    PickupAddress: {
+    wasteType: {
       type: DataTypes.STRING,
       allowNull: false,
-      field: "PickupAddress",
+      field: "WasteType",
     },
 
+    weight: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: "Weight",
+    },
 
-    // Already exists
-    PickupDate: {
+    pickupDate: {
       type: DataTypes.DATEONLY,
       allowNull: false,
       field: "PickupDate",
     },
 
-
-    // New Field - Weight
-    Weight: {
+    pickupTime: {
       type: DataTypes.STRING,
-      allowNull: true,
-      field: "Weight",
-    },
-
-
-    // New Field - Pickup Time
-    PickupTime: {
-      type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
       field: "PickupTime",
     },
 
+    pickupAddress: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      field: "PickupAddress",
+    },
 
-    // New Field - Uploaded Image Name
-    WasteImage: {
+    wasteImage: {
       type: DataTypes.STRING,
       allowNull: true,
       field: "WasteImage",
-    },
-
-
-    Description: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      field: "Description",
-    },
-
-
-    Status: {
-      type: DataTypes.STRING,
-      defaultValue: "Pending",
-      field: "Status",
-    },
-
-
-    RequestDate: {
-      type: DataTypes.DATE,
-      field: "RequestDate",
     },
 
   },
@@ -87,6 +53,5 @@ const PickupRequest = sequelize.define(
     timestamps: false,
   }
 );
-
 
 module.exports = PickupRequest;

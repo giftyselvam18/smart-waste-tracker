@@ -7,61 +7,90 @@ body,
   overflow-x: hidden;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .home {
   width: 100%;
   min-height: 100vh;
 }
 
 .hero {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
-  margin: 0;
-  padding: 0;
-
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
+  position: relative;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-/* Dark overlay */
+/* Dark Overlay */
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .overlay {
   position: relative;
   z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   text-align: center;
   color: white;
+
+  width: 90%;
+  max-width: 900px;
   padding: 20px;
-  max-width: 850px;
 }
 
-.overlay h1{
-  font-size:60px;
-  font-weight:800;
-  margin-bottom:20px;
-  text-shadow:3px 3px 10px rgba(0,0,0,.8);
+.overlay h1 {
+  font-size: 60px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  line-height: 1.2;
+  text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
 }
 
-.overlay h2{
-  font-size:36px;
-  line-height:1.5;
-  margin-bottom:20px;
-  text-shadow:2px 2px 8px rgba(0,0,0,.8);
+.overlay h2 {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  line-height: 1.4;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
 }
 
-.overlay p{
-  font-size:22px;
-  letter-spacing:1px;
-  text-shadow:2px 2px 8px rgba(0,0,0,.8);
+.overlay p {
+  font-size: 22px;
+  line-height: 1.6;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .overlay h1 {
+    font-size: 42px;
+  }
+
+  .overlay h2 {
+    font-size: 26px;
+  }
+
+  .overlay p {
+    font-size: 18px;
+  }
 }

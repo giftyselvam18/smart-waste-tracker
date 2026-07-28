@@ -1,6 +1,7 @@
 import "./UserDashboard.css";
 import { Link } from "react-router-dom";
 import DashboardTopBar from "../../components/TopBar/DashboardTopBar";
+import { FaRobot } from "react-icons/fa";
 
 function UserDashboard() {
   return (
@@ -15,6 +16,17 @@ function UserDashboard() {
           <ul>
             <li><Link to="/UserDashboard/dashboard">🏠 Dashboard</Link></li>
             <li><Link to="/UserDashboard/request">🗑 Request Pickup</Link></li>
+            <li>
+  <Link to="/AIWasteClassifier">
+
+    <FaRobot />
+
+    <span>
+      AI Waste Classifier
+    </span>
+
+  </Link>
+</li>
             <li><Link to="/UserDashboard/track">📍 Track Status</Link></li>
             <li><Link to="/UserDashboard/history">📜 Collection History</Link></li>
             <li><Link to="/UserDashboard/notifications">🔔 Notifications</Link></li>
