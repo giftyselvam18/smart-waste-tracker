@@ -10,12 +10,13 @@ const {
 // Create Pickup Request
 // ==========================
 exports.createPickupRequest = async (req, res) => {
+
   try {
 
     console.log("========== REQUEST BODY ==========");
     console.log(req.body);
 
-    // Waste Type -> CategoryID Mapping
+
     const categoryMap = {
       Plastic: 1,
       Paper: 2,
@@ -25,38 +26,65 @@ exports.createPickupRequest = async (req, res) => {
       "E-Waste": 6,
     };
 
+
     const pickupData = {
+
       UserID: req.body.UserID,
+
       CategoryID: categoryMap[req.body.wasteType],
+
       PickupAddress: req.body.pickupAddress,
-      PickupDate: req.body.pickupDate,   // ✅ Add this back
+
+      PickupDate: req.body.pickupDate,
+
       PickupTime: req.body.pickupTime,
+
       Weight: req.body.weight,
-      Description: req.body.notes,
-      Status: "Pending",
-      // RequestDate வேண்டாம். SQL Server GETDATE() default use ஆகும்.
+
+      Description: req.body.notes || "",
+
+      Status: "Pending"
+
     };
+
 
     console.log("========== DATA TO INSERT ==========");
     console.log(pickupData);
 
-    const pickup = await PickupRequest.create(pickupData);
+
+
+    const pickup = await PickupRequest.create(
+      pickupData
+    );
+
 
     res.status(201).json({
+
       message: "Pickup Request Created Successfully",
-      pickup,
+
+      pickup
+
     });
 
-  } catch (error) {
 
-    console.error("========== FULL ERROR ==========");
-    console.error(error);
+  } catch(error) {
+
+
+    console.error(
+      "CREATE PICKUP ERROR:",
+      error
+    );
+
 
     res.status(500).json({
-      message: error.message,
+
+      message:error.message
+
     });
 
+
   }
+
 };
 // ==========================
 // Get All Pickup Requests
@@ -80,10 +108,12 @@ exports.getAllPickupRequests = async (req, res) => {
 
     console.error(error);
 
+
+    console.log(error);
+
     res.status(500).json({
       message: error.message,
     });
-
   }
 };
 // ==========================

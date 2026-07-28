@@ -1,133 +1,870 @@
-import "./Login.css";
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import API from "../../services/api";
+const {
+  PickupRequest,
+  PickupAssignment,
+  Collector,
+  User,
+  WasteCategory,
+} = require("../models");
 
-function Login() {
-  const navigate = useNavigate();
-  const { role } = useParams();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [securityCode, setSecurityCode] = useState("");
-  const [collectorCode, setCollectorCode] = useState("");
+// ==========================
+// Create Pickup Request
+// ==========================
+exports.createPickupRequest = async (req, res) => {
+  try {
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+    // Waste Type -> CategoryID Mapping
+    const categoryMap = {
+      Plastic: 1,
+      Paper: 2,
+      Metal: 3,
+      Glass: 4,
+      Organic: 5,
+      "E-Waste": 6,
+    };
 
-    try {
-      let response;
+    const pickup = await PickupRequest.create({
+      UserID: req.body.UserID, // login user id
+      CategoryID: categoryMap[req.body.wasteType],
+      PickupAddress: req.body.pickupAddress,
+      PickupDate: req.body.pickupDate,
+      PickupTime: req.body.pickupTime,
+      Weight: req.body.weight,
+      Description: req.body.notes,
+      Status: "Pending",
+      RequestDate: new Date(),
+    });
 
-      // USER LOGIN
-      if (role === "user") {
-        response = await API.post("/auth/login", {
-          username,
-          password,
-          role: "user",
-        });
+    res.status(201).json({
+      message: "Pickup Request Created Successfully",
+      pickup,
+    });
+
 
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", "user");
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
-        alert("User Login Successful");
-        navigate("/UserDashboard");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+// ==========================
+// Get All Pickup Requests
+// ==========================
+exports.getAllPickupRequests = async (req, res) => {
+
+
+  try {
+
+    const requests = await PickupRequest.findAll({
+
+      include:[
+        User,
+        WasteCategory
+      ],
+
+      order:[
+        ["RequestID","DESC"]
+      ]
+
+    });
+
+
+    res.status(200).json(requests);
+
+
+  } catch(error){
+
+    res.status(500).json({
+      message:error.message
+    });
+
+  }
+
+};
+
+
+
+
+// ==========================
+// Get Pickup By ID
+// ==========================
+exports.getPickupRequestById = async(req,res)=>{
+
+  try{
+
+    const pickup = await PickupRequest.findByPk(
+      req.params.id,
+      {
+        include:[
+          User,
+          WasteCategory
+        ]
       }
+    );
 
-      // ADMIN LOGIN
-      else if (role === "admin") {
-        response = await API.post("/auth/login", {
-          username,
-          password,
-          securityCode,
-          role: "admin",
-        });
 
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("role", "admin");
+    if(!pickup){
 
-        alert("Admin Login Successful");
-        navigate("/AdminDashboard");
-      }
+      return res.status(404).json({
+        message:"Pickup Request Not Found"
+      });
 
-      // COLLECTOR LOGIN
-      else if (role === "collector") {
-        response = await API.post("/auth/login", {
-          username: collectorCode,
-          password,
-          role: "collector",
-        });
-
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("role", "collector");
-
-        alert("Collector Login Successful");
-        navigate("/CollectorDashboard");
-      }
-    } catch (error) {
-      console.log("Login Error:", error.response);
-
-      alert(
-        error.response?.data?.message ||
-        "Login Failed"
-      );
     }
-  };
 
-  return (
-    <div className="login-container">
-      <div className="login-card">
-        <h2>{role?.toUpperCase()} LOGIN</h2>
 
-        <form onSubmit={handleLogin}>
-          {role === "collector" ? (
-            <input
-              type="text"
-              placeholder="Collector Code"
-              value={collectorCode}
-              onChange={(e) => setCollectorCode(e.target.value)}
-              required
-            />
-          ) : (
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          )}
+    res.status(200).json(pickup);
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
 
-          {role === "admin" && (
-            <input
-              type="text"
-              placeholder="Security Code"
-              value={securityCode}
-              onChange={(e) => setSecurityCode(e.target.value)}
-              required
-            />
-          )}
 
-          <button type="submit">Login</button>
+  }catch(error){
 
-          <p className="register-link">
-            Don't have an account?{" "}
-            <span onClick={() => navigate("/register")}>
-              Register
-            </span>
-          </p>
-        </form>
-      </div>
-    </div>
-  );
+    res.status(500).json({
+      message:error.message
+    });
+
+  }
+
+};
+
+
+
+
+
+// ==========================
+// Update Pickup Request
+// ==========================
+exports.updatePickupRequest = async(req,res)=>{
+
+  try{
+
+
+    const pickup = await PickupRequest.findByPk(
+      req.params.id
+    );
+
+
+    if(!pickup){
+
+      return res.status(404).json({
+        message:"Pickup Request Not Found"
+      });
+
+    }
+
+
+    await pickup.update(req.body);
+
+
+    res.status(200).json({
+
+      message:"Pickup Request Updated Successfully",
+      pickup
+
+    });
+
+
+
+  }catch(error){
+
+    res.status(500).json({
+      message:error.message
+    });
+
+  }
+
+};
+
+
+
+
+
+// ==========================
+// Delete Pickup Request
+// ==========================
+exports.deletePickupRequest = async(req,res)=>{
+
+  try{
+
+
+    const pickup = await PickupRequest.findByPk(
+      req.params.id
+    );
+
+
+    if(!pickup){
+
+      return res.status(404).json({
+        message:"Pickup Request Not Found"
+      });
+
+    }
+
+
+    await pickup.destroy();
+
+
+    res.status(200).json({
+
+      message:"Pickup Request Deleted Successfully"
+
+    });
+
+
+
+  }catch(error){
+
+    res.status(500).json({
+      message:error.message
+    });
+
+  }
+
+};
+
+
+
+
+
+// ==========================
+// Assign Collector
+// ==========================
+exports.assignCollector = async(req,res)=>{
+
+try{
+
+
+const {
+  RequestID,
+  CollectorID
+}=req.body;
+
+
+
+// Check Pickup
+
+const pickup = await PickupRequest.findByPk(
+  RequestID
+);
+
+
+if(!pickup){
+
+ return res.status(404).json({
+   message:"Pickup Request Not Found"
+ });
+
 }
 
-export default Login;
+
+
+
+// Check Collector
+
+const collector = await Collector.findByPk(
+  CollectorID
+);
+
+
+if(!collector){
+
+ return res.status(404).json({
+   message:"Collector Not Found"
+ });
+
+}
+
+
+
+
+// Check Already Assigned
+
+const existing = await PickupAssignment.findOne({
+
+ where:{
+   RequestID,
+   Status:"Assigned"
+ }
+
+});
+
+
+
+if(existing){
+
+ return res.status(400).json({
+   message:"Pickup Already Assigned"
+ });
+
+}
+
+
+
+
+
+// Create Assignment
+
+const assignment = await PickupAssignment.create({
+
+ RequestID,
+
+ CollectorID,
+
+ AssignedDate:new Date(),
+
+ Status:"Assigned"
+
+});
+
+
+
+
+// Update Pickup Status
+
+await pickup.update({
+
+ Status:"Assigned"
+
+});
+
+
+
+
+// Update Collector Status
+
+await collector.update({
+
+ Status:"Busy"
+
+});
+
+
+
+
+
+res.status(201).json({
+
+ message:"Collector Assigned Successfully",
+
+ assignment
+
+});
+
+
+
+}catch(error){
+
+console.error(error);
+
+res.status(500).json({
+
+ message:error.message
+
+});
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+// ==========================
+// Get All Assignments
+// ==========================
+exports.getAllAssignments = async(req,res)=>{
+
+
+try{
+
+
+const assignments = await PickupAssignment.findAll({
+
+include:[
+
+ Collector,
+
+ {
+
+  model:PickupRequest,
+
+  include:[
+    User,
+    WasteCategory
+  ]
+
+ }
+
+],
+
+order:[
+ ["AssignmentID","DESC"]
+]
+
+
+});
+
+
+
+res.status(200).json(assignments);
+
+
+
+}catch(error){
+
+res.status(500).json({
+
+ message:error.message
+
+});
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+// ==========================
+// Get Assignment By ID
+// ==========================
+exports.getAssignmentById = async(req,res)=>{
+
+
+try{
+
+
+const assignment = await PickupAssignment.findByPk(
+
+req.params.id,
+
+{
+
+include:[
+
+Collector,
+
+{
+
+model:PickupRequest,
+
+include:[
+ User,
+ WasteCategory
+]
+
+}
+
+]
+
+}
+
+
+);
+
+
+
+if(!assignment){
+
+return res.status(404).json({
+
+message:"Assignment Not Found"
+
+});
+
+}
+
+
+
+res.status(200).json(assignment);
+
+
+
+}catch(error){
+
+res.status(500).json({
+
+message:error.message
+
+});
+
+}
+
+
+};
+
+
+
+
+
+
+
+// ==========================
+// Delete Assignment
+// ==========================
+exports.deleteAssignment = async(req,res)=>{
+
+
+try{
+
+
+const assignment = await PickupAssignment.findByPk(
+ req.params.id
+);
+
+
+
+if(!assignment){
+
+return res.status(404).json({
+
+message:"Assignment Not Found"
+
+});
+
+}
+
+
+
+await assignment.destroy();
+
+
+
+res.status(200).json({
+
+message:"Assignment Deleted Successfully"
+
+});
+
+
+
+}catch(error){
+
+res.status(500).json({
+
+message:error.message
+
+});
+
+}
+
+
+};
+
+
+
+
+
+
+
+// ==========================
+// Collector Dashboard Requests
+// ==========================
+exports.getCollectorRequests = async(req,res)=>{
+
+
+try{
+
+
+const requests = await PickupAssignment.findAll({
+
+where:{
+ CollectorID:req.params.id
+},
+
+
+include:[
+
+Collector,
+
+{
+
+model:PickupRequest,
+
+include:[
+ User,
+ WasteCategory
+]
+
+}
+
+]
+
+
+});
+
+
+
+res.status(200).json(requests);
+
+
+
+}catch(error){
+
+res.status(500).json({
+
+message:error.message
+
+});
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+// ==========================
+// Start Pickup
+// ==========================
+exports.startPickup = async(req,res)=>{
+
+
+try{
+
+
+const pickup = await PickupRequest.findByPk(
+ req.params.id
+);
+
+
+
+if(!pickup){
+
+return res.status(404).json({
+
+message:"Pickup Request Not Found"
+
+});
+
+}
+
+
+
+
+await pickup.update({
+
+Status:"On the Way"
+
+});
+
+
+
+res.status(200).json({
+
+message:"Pickup Started Successfully",
+
+pickup
+
+});
+
+
+
+}catch(error){
+
+res.status(500).json({
+
+message:error.message
+
+});
+
+}
+
+
+};
+
+
+
+
+
+
+
+
+// ==========================
+// Complete Pickup
+// ==========================
+exports.completePickup = async(req,res)=>{
+
+
+try{
+
+
+const pickup = await PickupRequest.findByPk(
+ req.params.id
+);
+
+
+
+if(!pickup){
+
+return res.status(404).json({
+
+message:"Pickup Request Not Found"
+
+});
+
+}
+
+
+
+
+await pickup.update({
+
+Status:"Completed"
+
+});
+
+
+
+
+
+const assignment = await PickupAssignment.findOne({
+
+where:{
+ RequestID:req.params.id
+}
+
+});
+
+
+
+if(assignment){
+
+
+await assignment.update({
+
+Status:"Completed"
+
+});
+
+
+
+const collector = await Collector.findByPk(
+ assignment.CollectorID
+);
+
+
+
+if(collector){
+
+await collector.update({
+
+Status:"Available"
+
+});
+
+}
+
+
+}
+
+
+
+
+res.status(200).json({
+
+message:"Pickup Completed Successfully",
+
+pickup
+
+});
+
+
+
+}catch(error){
+
+
+res.status(500).json({
+
+message:error.message
+
+});
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+
+// ==========================
+// Today's Collection
+// ==========================
+exports.getTodayCollection = async(req,res)=>{
+
+
+try{
+
+
+const today = new Date()
+.toISOString()
+.split("T")[0];
+
+
+
+const collections = await PickupRequest.findAll({
+
+where:{
+
+Status:"Completed",
+
+PickupDate:today
+
+}
+
+
+});
+
+
+
+
+res.status(200).json({
+
+totalCollection:collections.length,
+
+collections
+
+});
+
+
+
+
+}catch(error){
+
+
+res.status(500).json({
+
+message:error.message
+
+});
+
+
+}
+
+
+};

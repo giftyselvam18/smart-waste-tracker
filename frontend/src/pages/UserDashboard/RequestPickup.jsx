@@ -20,6 +20,7 @@ import pickupImg from "../../assets/pickup.png";
 
 function RequestPickup() {
 
+
   const [formData, setFormData] = useState({
 
     wasteType: "",
@@ -28,6 +29,7 @@ function RequestPickup() {
     pickupTime: "",
     pickupAddress: "",
     notes: "",
+    wasteImage: null,
 
   });
 
@@ -47,6 +49,20 @@ function RequestPickup() {
 
 
 
+  const handleFileChange = (e) => {
+
+    setFormData({
+
+      ...formData,
+
+      wasteImage: e.target.files[0],
+
+    });
+
+  };
+
+
+
   const handleSubmit = async (e) => {
 
     e.preventDefault();
@@ -55,7 +71,9 @@ function RequestPickup() {
     try {
 
 
-      const user = JSON.parse(localStorage.getItem("user"));
+      const user = JSON.parse(
+        localStorage.getItem("user")
+      );
 
 
       console.log("Logged User:", user);
@@ -64,11 +82,9 @@ function RequestPickup() {
 
       if (!user || (!user.id && !user.UserID)) {
 
-
         alert("User not logged in. Please login again.");
 
         return;
-
 
       }
 
@@ -104,16 +120,15 @@ function RequestPickup() {
 
 
 
-      const response = await submitPickupRequest(requestData);
+      const response = await submitPickupRequest(
+        requestData
+      );
 
 
 
       alert(
-
         response.message ||
-
         "Pickup Request Submitted Successfully!"
-
       );
 
 
@@ -121,16 +136,12 @@ function RequestPickup() {
       setFormData({
 
         wasteType: "",
-
         weight: "",
-
         pickupDate: "",
-
         pickupTime: "",
-
         pickupAddress: "",
-
         notes: "",
+        wasteImage: null,
 
       });
 
@@ -145,13 +156,9 @@ function RequestPickup() {
       );
 
 
-
       alert(
-
         error.response?.data?.message ||
-
         "Failed to submit pickup request"
-
       );
 
 
@@ -212,8 +219,9 @@ function RequestPickup() {
 
 
                   <p>
-                    Schedule your waste pickup quickly and help keep our city clean.
+                    Schedule your waste pickup quickly and keep the city clean.
                   </p>
+
 
                 </div>
 
@@ -222,10 +230,12 @@ function RequestPickup() {
 
 
 
+
               <form onSubmit={handleSubmit}>
 
 
                 <div className="form-group">
+
 
                   <label>
                     Waste Type
@@ -233,6 +243,7 @@ function RequestPickup() {
 
 
                   <div className="input-box">
+
 
                     <FaRecycle />
 
@@ -245,7 +256,10 @@ function RequestPickup() {
 
                       onChange={handleChange}
 
+                      required
+
                     >
+
 
                       <option value="">
                         Select Waste Type
@@ -281,7 +295,9 @@ function RequestPickup() {
 
                   </div>
 
+
                 </div>
+
 
 
 
@@ -290,12 +306,14 @@ function RequestPickup() {
 
                   <div className="form-group">
 
+
                     <label>
                       Weight (kg)
                     </label>
 
 
                     <div className="input-box">
+
 
                       <FaWeightHanging />
 
@@ -306,17 +324,20 @@ function RequestPickup() {
 
                         name="weight"
 
-                        placeholder="Enter Weight"
-
                         value={formData.weight}
 
                         onChange={handleChange}
 
+                        required
+
                       />
+
 
                     </div>
 
+
                   </div>
+
 
 
 
@@ -331,6 +352,7 @@ function RequestPickup() {
 
                     <div className="input-box">
 
+
                       <FaCalendarAlt />
 
 
@@ -344,7 +366,10 @@ function RequestPickup() {
 
                         onChange={handleChange}
 
+                        required
+
                       />
+
 
                     </div>
 
@@ -353,6 +378,7 @@ function RequestPickup() {
 
 
                 </div>
+
 
 
 
@@ -370,6 +396,7 @@ function RequestPickup() {
 
                     <div className="input-box">
 
+
                       <FaClock />
 
 
@@ -383,12 +410,16 @@ function RequestPickup() {
 
                         onChange={handleChange}
 
+                        required
+
                       />
+
 
                     </div>
 
 
                   </div>
+
 
 
 
@@ -413,11 +444,11 @@ function RequestPickup() {
 
                         name="pickupAddress"
 
-                        placeholder="Enter Pickup Address"
-
                         value={formData.pickupAddress}
 
                         onChange={handleChange}
+
+                        required
 
                       />
 
@@ -433,6 +464,7 @@ function RequestPickup() {
 
 
 
+
                 <div className="form-group">
 
 
@@ -443,6 +475,7 @@ function RequestPickup() {
 
                   <div className="upload-box">
 
+
                     <FaUpload />
 
 
@@ -451,6 +484,8 @@ function RequestPickup() {
                       type="file"
 
                       accept="image/*"
+
+                      onChange={handleFileChange}
 
                     />
 
@@ -463,6 +498,7 @@ function RequestPickup() {
 
 
 
+
                 <button
 
                   type="submit"
@@ -470,6 +506,7 @@ function RequestPickup() {
                   className="submit-btn"
 
                 >
+
 
                   <FaPaperPlane />
 
@@ -479,9 +516,7 @@ function RequestPickup() {
                 </button>
 
 
-
               </form>
-
 
 
             </div>

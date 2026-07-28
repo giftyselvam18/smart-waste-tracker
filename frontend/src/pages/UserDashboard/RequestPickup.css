@@ -1,370 +1,234 @@
-/* ===========================
-   PAGE
-=========================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+}
+
+
+
+.background-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
 
 .pickup-page{
     position:relative;
     width:100%;
     min-height:100vh;
-    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
 }
-
-
-/* ===========================
-   BACKGROUND IMAGE
-=========================== */
-
-.background-image{
-    position:absolute;
-    top:0;
-    left:0;
-
-    width:100%;
-    height:100%;
-
-    object-fit:cover;
-    z-index:-2;
-}
-
-
-/* ===========================
-   OVERLAY CENTER
-=========================== */
 
 .overlay{
-    position:relative;
-
-    width:100%;
-    min-height:100vh;
-
+    position:absolute;
+    inset:0;
     display:flex;
-
-    justify-content:center; 
+    justify-content:center;
     align-items:center;
-
-
-    padding:0;
 }
-
-
-/* ===========================
-   FORM CARD
-=========================== */
 
 .pickup-card{
-    width:430px;
-    background:#fff;
-    border-radius:18px;
-    padding:25px;
+    width:700px;
+    max-width:95%;
+    margin:0 auto;
+  animation: fadeUp .6s ease;
 }
 
-/* ===========================
-   HEADER
-=========================== */
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(25px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
 
 .pickup-header{
-
-    display:flex;
-    align-items:center;
-
-    gap:15px;
-
-    margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+  margin-bottom:30px;
 }
-
 
 .pickup-icon{
-
-    width:45px;
-    height:45px;
-
-    border-radius:50%;
-
-    background:#16a34a;
-
-    color:white;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    font-size:18px;
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#2e7d32,#43a047);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  font-size:28px;
 }
-
 
 .pickup-header h2{
-
-    margin:0;
-
-    color:#14532d;
-
-    font-size:22px;
+  color:#1b5e20;
+  font-size:30px;
+  margin-bottom:5px;
 }
-
 
 .pickup-header p{
-
-    margin-top:5px;
-
-    color:#666;
-
-    font-size:13px;
-
+  color:#4d6d50;
+  font-size:15px;
 }
-
-
-
-/* ===========================
-   FORM
-=========================== */
-
-
-form{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:12px;
-
-}
-
-
-.row{
-
-    display:flex;
-
-    gap:12px;
-
-}
-
 
 .form-group{
-
-    flex:1;
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:5px;
-
+  margin-bottom:18px;
 }
-
 
 .form-group label{
-
-    font-size:13px;
-
-    font-weight:600;
-
-    color:#14532d;
-
+  display:block;
+  margin-bottom:8px;
+  color:#1b5e20;
+  font-weight:700;
 }
 
-
-/* ===========================
-   INPUT BOX
-=========================== */
-
-
-.input-box,
-.textarea-box,
-.upload-box{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-
-    background:#fff;
-
-
-    border:1.5px solid #325180;
-
-
-    border-radius:12px;
-
-
-    padding:10px 12px;
-
-
-    transition:0.3s;
-
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
 }
 
-
-
-.input-box:hover,
-.textarea-box:hover,
-.upload-box:hover{
-
-    border-color:#22c55e;
-
+.input-box{
+  display:flex;
+  align-items:center;
+  background:white;
+  border:2px solid #a5d6a7;
+  border-radius:12px;
+  padding:0 15px;
+  transition:.3s;
 }
 
-
-
-.input-box:focus-within,
-.textarea-box:focus-within{
-
-    border-color:#22c55e;
-
-    box-shadow:
-    0 0 0 3px rgba(34,197,94,0.15);
-
+.input-box:hover{
+  border-color:#4caf50;
 }
 
+.input-box:focus-within{
+  border-color:#2e7d32;
+  box-shadow:0 0 12px rgba(46,125,50,.25);
+}
 
-
-/* Input */
-
+.input-box svg{
+  color:#2e7d32;
+  margin-right:10px;
+  font-size:18px;
+}
 
 .input-box input,
 .input-box select,
-.textarea-box textarea{
-
-    width:100%;
-
-    border:none;
-
-    outline:none;
-
-    background:transparent;
-
-    font-size:13px;
-
+.input-box textarea{
+  width:100%;
+  border:none;
+  outline:none;
+  background:transparent;
+  padding:14px 0;
+  font-size:15px;
+  color:#222;
 }
-
-
 
 .input-box input::placeholder,
-.textarea-box textarea::placeholder{
-
-    color:#6b7280;
-
+.input-box textarea::placeholder{
+  color:#888;
 }
 
-
-
-/* Textarea */
-
-
-.textarea-box{
-
-    align-items:flex-start;
-
+.input-box select option{
+  color:#000;
 }
 
-
-.textarea-box textarea{
-
-    resize:none;
-
-    min-height:65px;
-
+textarea{
+  resize:none;
 }
 
+.upload-box{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:white;
+  border:2px dashed #66bb6a;
+  border-radius:12px;
+  padding:15px;
+}
 
-
-/* Upload */
-
+.upload-box svg{
+  color:#2e7d32;
+  font-size:22px;
+}
 
 .upload-box input{
-
-    width:100%;
-
+  flex:1;
 }
 
+.upload-box input::file-selector-button{
+  background:#2e7d32;
+  color:white;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-right:10px;
+}
 
-
-/* ===========================
-   BUTTON
-=========================== */
-
+.upload-box input::file-selector-button:hover{
+  background:#1b5e20;
+}
 
 .submit-btn{
-
-    width:100%;
-
-    margin-top:10px;
-
-
-    padding:12px;
-
-
-    border:none;
-
-
-    border-radius:12px;
-
-
-    background:#16a34a;
-
-
-    color:white;
-
-
-    font-size:14px;
-
-
-    cursor:pointer;
-
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    gap:8px;
-
-
-    transition:0.3s;
-
+  width:100%;
+  margin-top:25px;
+  padding:16px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#2e7d32,#4caf50);
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  transition:.3s;
 }
-
-
 
 .submit-btn:hover{
-
-    background:#15803d;
-
+  transform:translateY(-3px);
+  box-shadow:0 12px 25px rgba(46,125,50,.35);
 }
 
+.submit-btn svg{
+  font-size:18px;
+}
 
+@media(max-width:768px){
 
-/* ===========================
-   RESPONSIVE
-=========================== */
+  .pickup-card{
+    padding:25px;
+  }
 
+  .row{
+    grid-template-columns:1fr;
+    gap:0;
+  }
 
-@media(max-width:600px){
+  .pickup-header{
+    flex-direction:column;
+    text-align:center;
+  }
 
-
-    .overlay{
-
-        padding:15px;
-
-    }
-
-
-    .pickup-card{
-
-        width:100%;
-
-        padding:20px;
-
-    }
-
-
-    .row{
-
-        flex-direction:column;
-
-    }
+  .pickup-header h2{
+    font-size:24px;
+  }
 
 }
