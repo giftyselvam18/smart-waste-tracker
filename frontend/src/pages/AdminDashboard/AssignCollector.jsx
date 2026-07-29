@@ -18,9 +18,12 @@ function AssignCollector() {
   const fetchCollectors = async () => {
     try {
       const response = await API.get("/collectors");
+
+      console.log("Collectors:", response.data);
+
       setCollectors(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       alert("Failed to load collectors");
     }
   };
@@ -32,16 +35,16 @@ function AssignCollector() {
     }
 
     try {
-      await API.post("/pickups/assign", {
-        RequestID: Number(id),
-        CollectorID: Number(collectorId),
+      const response = await API.post("/pickups/assign", {
+        RequestID: parseInt(id),
+        CollectorID: parseInt(collectorId),
       });
 
-      alert("Collector Assigned Successfully");
+      alert(response.data.message);
 
       navigate("/admin/pickups");
     } catch (error) {
-      console.log(error);
+      console.error(error);
       alert(
         error.response?.data?.message ||
           "Failed to assign collector"
@@ -56,17 +59,20 @@ function AssignCollector() {
       <div className="assign-container">
         <div className="assign-card">
 
-          <h1>🚛 Assign Collector</h1>
+          <h1>Assign Collector</h1>
 
           <p className="pickup-id">
-            Pickup Request ID : <strong>{id}</strong>
+            Pickup Request ID :
+            <strong> {id}</strong>
           </p>
 
           <label>Select Collector</label>
 
           <select
             value={collectorId}
-            onChange={(e) => setCollectorId(e.target.value)}
+            onChange={(e) =>
+              setCollectorId(e.target.value)
+            }
           >
             <option value="">
               -- Select Collector --

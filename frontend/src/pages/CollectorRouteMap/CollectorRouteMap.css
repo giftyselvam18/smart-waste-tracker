@@ -1,0 +1,62 @@
+.route-map-page{
+
+padding:40px;
+
+background:#f4fff4;
+
+min-height:100vh;
+
+}
+
+
+.route-map-page h1{
+
+color:#1b5e20;
+
+}
+
+
+
+.location-card{
+
+background:white;
+
+padding:30px;
+
+border-radius:15px;
+
+width:400px;
+
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+
+}
+
+
+
+.location-card h2{
+
+color:#2e7d32;
+
+}
+
+
+
+.location-card button{
+
+margin-top:20px;
+
+padding:12px 20px;
+
+border:none;
+
+border-radius:8px;
+
+background:#2e7d32;
+
+color:white;
+
+cursor:pointer;
+
+font-size:16px;
+
+}

@@ -1,62 +1,163 @@
-import {useEffect,useState} from "react";
-import axios from "axios";
-import FeatureTopBar from "../../components/TopBar/FeatureTopBar";
+import { useEffect, useState } from "react";
+import API from "../../services/api";
+import "./TrackStatus.css";
+
+function TrackStatus() {
+
+  const [pickups, setPickups] = useState([]);
+
+
+  useEffect(() => {
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+
+    if (user) {
+
+      API.get(`/pickups/user/${user.id}`)
+        .then((res) => {
+
+          console.log("TRACK DATA:", res.data);
+
+          setPickups(res.data);
+
+        })
+        .catch((err) => {
+
+          console.log("Track Status Error:", err);
+
+        });
+
+    }
+
+  }, []);
 
 
 
-function TrackStatus(){
+  const getStatusClass = (status) => {
 
-const [requests,setRequests]=useState([]);
-
-
-useEffect(()=>{
-
-axios.get(
-"http://localhost:5000/api/requests/myrequests"
-)
-.then(res=>{
-setRequests(res.data);
-})
+    if (status === "Completed")
+      return "completed";
 
 
-},[]);
+    if (status === "Assigned")
+      return "assigned";
+
+
+    if (status === "In Progress")
+      return "progress";
+
+
+    return "pending";
+
+  };
 
 
 
-return(
-<>
-  <FeatureTopBar dashboardPath="/UserDashboard" />
+  return (
 
-<div>
-
-<h2>📍 Track Status</h2>
+    <div className="track-container">
 
 
-{
-requests.map((item)=>(
-<div key={item._id}>
-
-<h3>{item.wasteType}</h3>
-
-<p>
-Weight : {item.weight} kg
-</p>
-
-<p>
-Status : {item.status}
-</p>
+      <h2>
+        Track Pickup Status
+      </h2>
 
 
-</div>
-))
+
+      {
+        pickups.length === 0 ?
+
+
+        (
+          <p>
+            No Pickup Requests Found
+          </p>
+        )
+
+
+        :
+
+
+        pickups.map((item) => (
+
+
+          <div
+            className="status-card"
+            key={item.RequestID}
+          >
+
+
+            <h3>
+              {item.WasteType}
+            </h3>
+
+
+
+            <p>
+              Weight : {item.Weight || item.weight} Kg
+            </p>
+
+
+
+            <p>
+              Pickup Date : {item.PickupDate || item.pickupDate}
+            </p>
+
+
+
+            <p>
+              Pickup Time : {item.PickupTime || item.pickupTime}
+            </p>
+
+
+
+            <p>
+              Address : {item.PickupAddress || item.pickupAddress}
+            </p>
+
+
+
+            {
+              item.WasteCategory &&
+
+              <p>
+                Category : {item.WasteCategory.CategoryName}
+              </p>
+
+            }
+
+
+
+            <div className="status">
+
+              Status :
+
+              <span className={getStatusClass(item.Status)}>
+
+                {item.Status}
+
+              </span>
+
+
+            </div>
+
+
+
+          </div>
+
+
+        ))
+
+      }
+
+
+
+    </div>
+
+  );
+
 }
 
-
-</div>
-</>
-
-)
-
-}
 
 export default TrackStatus;

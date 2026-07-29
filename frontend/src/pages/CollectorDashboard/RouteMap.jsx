@@ -1,79 +1,305 @@
 import "./RouteMap.css";
-import { useNavigate } from "react-router-dom";
-import FeatureTopBar from "../../components/TopBar/FeatureTopBar";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-function RouteMap() {
 
-  const navigate = useNavigate();
-const pickupLocation = [13.0827, 80.2707]; // Chennai
-  const reachedDestination = () => {
-    alert("Destination Reached 📍");
-  };
+import { useEffect, useState } from "react";
 
-  return (
-    <>
-      <FeatureTopBar dashboardPath="/CollectorDashboard" />
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup
+} from "react-leaflet";
 
-      <div className="route-container">
+import "leaflet/dist/leaflet.css";
 
-        <h1>📍 Route Map</h1>
+import L from "leaflet";
 
-        <div className="route-card">
+import API from "../../services/api";
 
-          <h3>🟢 Status : In Progress</h3>
 
-          <p>
-            <b>Pickup Address</b>
-          </p>
 
-          <p>No.12, Gandhi Street, Chennai</p>
-<MapContainer
-  center={pickupLocation}
-  zoom={15}
-  style={{
-    height: "350px",
-    width: "100%",
-    borderRadius: "12px"
-  }}
->
-  <TileLayer
-    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-  />
+// Fix marker icon issue
 
-  <Marker position={pickupLocation}>
-    <Popup>
-      Pickup Location
-    </Popup>
-  </Marker>
+delete L.Icon.Default.prototype._getIconUrl;
 
-</MapContainer>s
-          <p>
-            <b>Distance :</b> 2.4 km
-          </p>
 
-          <p>
-            <b>ETA :</b> 8 mins
-          </p>
+L.Icon.Default.mergeOptions({
 
-          <button
-            className="reach-btn"
-            onClick={reachedDestination}
-          >
-            📍 Destination Reached
-          </button>
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
 
-          <button
-            className="back-btn"
-            onClick={() => navigate("/collector/pickups")}
-          >
-            ⬅ Back
-          </button>
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
 
-        </div>
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 
-      </div>
-    </>
-  );
+});
+
+
+
+
+
+function RouteMap(){
+
+
+const [address,setAddress] = useState("");
+
+const [position,setPosition] = useState(null);
+
+
+// Logged collector
+
+const collectorId = 2;
+
+
+
+
+
+useEffect(()=>{
+
+ fetchLocation();
+
+},[]);
+
+
+
+
+
+
+
+
+const fetchLocation = async()=>{
+
+
+try{
+
+
+// Get started pickup id
+
+const activePickupId =
+localStorage.getItem("activePickupId");
+
+
+
+console.log(
+"Active Pickup ID:",
+activePickupId
+);
+
+
+
+
+const response = await API.get(
+
+ `/pickups/collector/${collectorId}`
+
+);
+
+
+
+console.log(
+"Collector Pickup Data:",
+response.data
+);
+
+
+
+
+// Find started pickup only
+
+const pickup = response.data.find(
+
+(item)=>
+
+String(item.RequestID) ===
+String(activePickupId)
+
+);
+
+
+
+
+console.log(
+"Selected Pickup:",
+pickup
+);
+
+
+
+
+
+if(pickup?.PickupRequest){
+
+
+
+const userAddress =
+
+pickup.PickupRequest.pickupAddress ||
+
+pickup.PickupRequest.PickupAddress;
+
+
+
+setAddress(userAddress);
+
+
+
+
+
+// Convert address to latitude longitude
+
+
+const geoResponse = await fetch(
+
+`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(userAddress)}`
+
+);
+
+
+
+const geoData = await geoResponse.json();
+
+
+
+
+if(geoData.length > 0){
+
+
+setPosition([
+
+parseFloat(geoData[0].lat),
+
+parseFloat(geoData[0].lon)
+
+]);
+
+
 }
+
+
+
+}
+
+
+
+}catch(error){
+
+
+console.log(
+"Map Error:",
+error
+);
+
+
+}
+
+
+};
+
+
+
+
+
+
+
+return(
+
+
+<div className="route-map-page">
+
+
+
+<h1>
+📍 Collector Route Map
+</h1>
+
+
+
+
+<h3>
+Pickup Address : {address || "No Address Found"}
+</h3>
+
+
+
+
+
+{
+
+position ?
+
+
+
+<MapContainer
+
+center={position}
+
+zoom={15}
+
+style={{
+
+height:"500px",
+
+width:"100%"
+
+}}
+
+>
+
+
+
+<TileLayer
+
+url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+
+/>
+
+
+
+
+<Marker position={position}>
+
+
+<Popup>
+
+Pickup Location
+
+<br/>
+
+{address}
+
+</Popup>
+
+
+</Marker>
+
+
+
+</MapContainer>
+
+
+
+
+:
+
+
+<h3>
+Loading Map...
+</h3>
+
+
+}
+
+
+
+</div>
+
+
+);
+
+
+}
+
+
 
 export default RouteMap;

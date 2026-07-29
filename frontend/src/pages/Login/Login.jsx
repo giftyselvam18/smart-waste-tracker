@@ -23,7 +23,6 @@ function Login() {
         response = await API.post("/auth/login", {
           username,
           password,
-          role: "user",
         });
 
         localStorage.setItem("token", response.data.token);
@@ -40,14 +39,20 @@ function Login() {
       // ADMIN LOGIN
       else if (role === "admin") {
         response = await API.post("/auth/login", {
-          username,
+          adminUsername: username,
           password,
           securityCode,
-          role: "admin",
         });
 
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", "admin");
+
+        if (response.data.admin) {
+          localStorage.setItem(
+            "admin",
+            JSON.stringify(response.data.admin)
+          );
+        }
 
         alert("Admin Login Successful");
         navigate("/AdminDashboard");
@@ -55,50 +60,43 @@ function Login() {
 
       // COLLECTOR LOGIN
       else if (role === "collector") {
-        response = await API.post("/auth/login", {
+        response = await API.post("/collectors/login", {
           username: collectorCode,
           password,
-          role: "collector",
         });
-
+        console.log("Collector Login Response:", response.data);
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", "collector");
+
+        localStorage.setItem(
+          "collector",
+          JSON.stringify(response.data.collector)
+        );
 
         alert("Collector Login Successful");
         navigate("/CollectorDashboard");
       }
-
     } catch (error) {
-      console.log("Login Error:", error.response);
+      console.log("Login Error:", error);
 
       alert(
-        error.response?.data?.message ||
-        "Login Failed"
+        error.response?.data?.message || "Login Failed"
       );
     }
   };
 
-
   return (
     <div className="login-container">
-
       <div className="login-card">
-
-        <h2>
-          {role ? role.toUpperCase() : "LOGIN"}
-        </h2>
-
+        <h2>{role ? role.toUpperCase() : "LOGIN"}</h2>
 
         <form onSubmit={handleLogin}>
-
           {role === "collector" ? (
             <input
               type="text"
               placeholder="Collector Code"
               value={collectorCode}
-              onChange={(e) =>
-                setCollectorCode(e.target.value)
-              }
+              onChange={(e) => setCollectorCode(e.target.value)}
               required
             />
           ) : (
@@ -106,58 +104,41 @@ function Login() {
               type="text"
               placeholder="Username"
               value={username}
-              onChange={(e) =>
-                setUsername(e.target.value)
-              }
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
           )}
-
 
           <input
             type="password"
             placeholder="Password"
             value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
-
 
           {role === "admin" && (
             <input
               type="text"
               placeholder="Security Code"
               value={securityCode}
-              onChange={(e) =>
-                setSecurityCode(e.target.value)
-              }
+              onChange={(e) => setSecurityCode(e.target.value)}
               required
             />
           )}
 
-
-          <button type="submit">
-            Login
-          </button>
-
+          <button type="submit">Login</button>
 
           {role === "user" && (
             <p className="register-link">
               Don't have an account?{" "}
-              <span
-                onClick={() => navigate("/register")}
-              >
+              <span onClick={() => navigate("/register")}>
                 Register
               </span>
             </p>
           )}
-
         </form>
-
       </div>
-
     </div>
   );
 }

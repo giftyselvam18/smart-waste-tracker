@@ -11,6 +11,18 @@ const PickupRequest = sequelize.define(
       field: "RequestID",
     },
 
+    UserID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "UserID",
+    },
+
+    CategoryID: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      field: "CategoryID",
+    },
+
     wasteType: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -47,6 +59,23 @@ const PickupRequest = sequelize.define(
       field: "WasteImage",
     },
 
+    Description: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "Description",
+    },
+
+    Status: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      field: "Status",
+    },
+
+    RequestDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: "RequestDate",
+    },
   },
   {
     tableName: "PickupRequests",

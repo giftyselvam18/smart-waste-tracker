@@ -3,14 +3,10 @@ const router = express.Router();
 
 const pickupController = require("../controllers/pickupController");
 
+
 // =========================
-// Pickup Request
+// Pickup Request Routes
 // =========================
-
-
-router.post("/request", pickupController.createPickupRequest);
-
-router.get("/request", pickupController.getAllPickupRequests);
 
 router.post(
   "/request",
@@ -42,34 +38,22 @@ router.delete(
 );
 
 
-router.get("/request/:id", pickupController.getPickupRequestById);
-
-router.put("/request/:id", pickupController.updatePickupRequest);
-
-router.delete("/request/:id", pickupController.deletePickupRequest);
 
 // =========================
-// Pickup Assignment
-// =========================
-router.post("/assign", pickupController.assignCollector);
-
-router.get("/assign", pickupController.getAllAssignments);
-
-router.get("/assign/:id", pickupController.getAssignmentById);
-
-router.delete("/assign/:id", pickupController.deleteAssignment);
-
-// =========================
-// Collector Routes
+// User Track Status Routes
 // =========================
 
-router.get("/collector/:id", pickupController.getCollectorRequests);
+router.get(
+  "/user/:id",
+  pickupController.getUserPickups
+);
 
-router.put("/start/:id", pickupController.startPickup);
 
-router.put("/complete/:id", pickupController.completePickup);
 
-router.get("/today-collection", pickupController.getTodayCollection);
+// =========================
+// Pickup Assignment Routes
+// =========================
+
 router.post(
   "/assign",
   pickupController.assignCollector
@@ -95,9 +79,8 @@ router.delete(
 
 
 
-
 // =========================
-// Collector Dashboard
+// Collector Dashboard Routes
 // =========================
 
 router.get(
@@ -107,21 +90,22 @@ router.get(
 
 
 
-
 // =========================
-// Pickup Status
+// Collector Pickup Actions
 // =========================
 
+// Start Pickup
 router.put(
- "/start/:RequestID",
- pickupController.startPickup
+  "/start/:RequestID",
+  pickupController.startPickup
 );
 
+
+// Complete Pickup
 router.put(
   "/complete/:id",
   pickupController.completePickup
 );
-
 
 
 

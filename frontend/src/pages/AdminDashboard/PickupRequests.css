@@ -2,130 +2,111 @@
     padding: 30px;
     background: #f5f8f7;
     min-height: 100vh;
+    overflow-x: auto;
 }
-
 
 .pickup-container h1 {
     font-size: 32px;
     margin-bottom: 25px;
     color: #1b4332;
-}
-
-
-/* Request Card */
-
-.pickup-card {
-    background: white;
-    width: 100%;
-    max-width: 600px;
-    padding: 25px;
-    margin-bottom: 20px;
-
-    border-radius: 15px;
-
-    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-
-    transition: 0.3s;
-}
-
-
-.pickup-card:hover {
-    transform: translateY(-5px);
-}
-
-
-/* User Name */
-
-.pickup-card h2 {
-    color: #2d6a4f;
-    margin-bottom: 15px;
-}
-
-
-/* Details */
-
-.pickup-card p {
-    font-size: 16px;
-    color: #444;
-    margin: 12px 0;
-}
-
-
-.pickup-card span {
     font-weight: bold;
-    color: orange;
 }
 
+/* Table */
+
+.pickup-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+/* Header */
+
+.pickup-table thead {
+    background: #2d6a4f;
+}
+
+.pickup-table th {
+    background: #2d6a4f !important;
+    color: #ffffff !important;
+    padding: 15px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    border: 1px solid #ddd;
+}
+
+/* Body */
+
+.pickup-table td {
+    padding: 12px;
+    text-align: center;
+    color: #333;
+    border: 1px solid #ddd;
+    background: #fff;
+}
+
+.pickup-table tbody tr:nth-child(even) {
+    background: #f7f7f7;
+}
+
+.pickup-table tbody tr:hover {
+    background: #e8f5e9;
+}
+
+/* Image */
+
+.pickup-table img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
 
 /* Buttons */
 
-.pickup-card button {
-
-    padding: 10px 22px;
-
+.accept-btn,
+.reject-btn {
+    padding: 8px 15px;
     border: none;
-
-    border-radius: 8px;
-
-    margin-right: 12px;
-
-    font-size: 15px;
-
+    border-radius: 6px;
+    color: #fff;
     cursor: pointer;
-
-    transition: 0.3s;
+    margin: 3px;
+    font-size: 14px;
 }
 
-
-/* Accept */
-
-.pickup-card button:first-child {
-
+.accept-btn {
     background: #2d6a4f;
-
-    color: white;
-
 }
 
-
-.pickup-card button:first-child:hover {
-
+.accept-btn:hover {
     background: #1b4332;
-
 }
 
-
-
-/* Reject */
-
-.pickup-card button:last-child {
-
+.reject-btn {
     background: #d62828;
-
-    color:white;
-
 }
 
-
-.pickup-card button:last-child:hover {
-
-    background:#a4161a;
-
+.reject-btn:hover {
+    background: #a4161a;
 }
 
+.accept-btn:disabled,
+.reject-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
-/* Empty Message */
+/* No Data */
 
-.pickup-container h3 {
-
-    background:white;
-
-    padding:20px;
-
-    border-radius:10px;
-
-    width:300px;
-
-    color:#666;
-
+.pickup-table td[colspan] {
+    text-align: center;
+    font-size: 18px;
+    padding: 25px;
+    color: #666;
 }

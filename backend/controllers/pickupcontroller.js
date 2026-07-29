@@ -31,15 +31,19 @@ exports.createPickupRequest = async (req, res) => {
 
       UserID: req.body.UserID,
 
+      wasteType: req.body.wasteType,
+
+      weight: req.body.weight,
+
+      pickupDate: req.body.pickupDate,
+
+      pickupTime: req.body.pickupTime,
+
+      pickupAddress: req.body.pickupAddress,
+
+      WasteImage: req.body.wasteImage || null,
+
       CategoryID: categoryMap[req.body.wasteType],
-
-      PickupAddress: req.body.pickupAddress,
-
-      PickupDate: req.body.pickupDate,
-
-      PickupTime: req.body.pickupTime,
-
-      Weight: req.body.weight,
 
       Description: req.body.notes || "",
 
@@ -48,7 +52,7 @@ exports.createPickupRequest = async (req, res) => {
     };
 
 
-    console.log("========== DATA TO INSERT ==========");
+    console.log("========== INSERT DATA ==========");
     console.log(pickupData);
 
 
@@ -60,14 +64,15 @@ exports.createPickupRequest = async (req, res) => {
 
     res.status(201).json({
 
-      message: "Pickup Request Created Successfully",
+      message:"Pickup Request Created Successfully",
 
       pickup
 
     });
 
 
-  } catch(error) {
+
+  } catch(error){
 
 
     console.error(
@@ -86,73 +91,36 @@ exports.createPickupRequest = async (req, res) => {
   }
 
 };
+
 // ==========================
 // Get All Pickup Requests
 // ==========================
 exports.getAllPickupRequests = async (req, res) => {
   try {
-
     const requests = await PickupRequest.findAll({
       include: [
-        User,
-        WasteCategory,
+        {
+          model: User,
+          attributes: ["UserID", "FullName"],
+        },
+        {
+          model: WasteCategory,
+          attributes: ["CategoryID", "CategoryName"],
+        },
       ],
-      order: [
-        ["RequestID", "DESC"],
-      ],
+      order: [["requestId", "DESC"]], // model attribute name
     });
 
+    console.log(JSON.stringify(requests, null, 2));
+
     res.status(200).json(requests);
-
   } catch (error) {
-
-    console.error(error);
-
-
     console.log(error);
-
     res.status(500).json({
       message: error.message,
     });
   }
 };
-// ==========================
-// Get All Pickup Requests
-// ==========================
-exports.getAllPickupRequests = async (req, res) => {
-
-  try {
-
-    const requests = await PickupRequest.findAll({
-
-      include:[
-        User,
-        WasteCategory
-      ],
-
-      order:[
-        ["RequestID","DESC"]
-      ]
-
-    });
-
-
-    res.status(200).json(requests);
-
-
-  } catch(error){
-
-    res.status(500).json({
-      message:error.message
-    });
-
-  }
-
-};
-
-
-
-
 // ==========================
 // Get Pickup By ID
 // ==========================
@@ -288,162 +256,100 @@ exports.deletePickupRequest = async(req,res)=>{
   }
 
 };
-
-
-
-
-
 // ==========================
 // Assign Collector
 // ==========================
 exports.assignCollector = async (req, res) => {
-
   try {
-
-    const {
-      RequestID,
-      CollectorID
-    } = req.body;
-
+    const { RequestID, CollectorID } = req.body;
 
     console.log("Assign Data:", req.body);
 
-
-    // Check RequestID and CollectorID
     if (!RequestID || !CollectorID) {
-
       return res.status(400).json({
-        message: "RequestID and CollectorID are required"
+        message: "RequestID and CollectorID are required",
       });
-
     }
 
-
-
-    // Check Pickup Request
-
-    const pickup = await PickupRequest.findByPk(
-      RequestID
-    );
-
+    const pickup = await PickupRequest.findByPk(RequestID);
 
     if (!pickup) {
-
       return res.status(404).json({
-        message: "Pickup Request Not Found"
+        message: "Pickup Request Not Found",
       });
-
     }
 
-
-
-    // Check Collector
-
-    const collector = await Collector.findByPk(
-      CollectorID
-    );
-
+    const collector = await Collector.findByPk(CollectorID);
 
     if (!collector) {
-
       return res.status(404).json({
-        message: "Collector Not Found"
+        message: "Collector Not Found",
       });
-
     }
-
-
-
-    // Check Already Assigned
 
     const existingAssignment = await PickupAssignment.findOne({
-
       where: {
-
         RequestID: Number(RequestID),
-
-        Status: "Assigned"
-
-      }
-
+        Status: "Assigned",
+      },
     });
-
-
 
     if (existingAssignment) {
-
       return res.status(400).json({
-
-        message: "Pickup Already Assigned"
-
+        message: "Pickup Already Assigned",
       });
-
     }
 
-
-
-    // Create Assignment
-    // AssignedDate removed because SQL Server datetime conversion issue
-
     const assignment = await PickupAssignment.create({
-
       RequestID: Number(RequestID),
-
       CollectorID: Number(CollectorID),
-
-      Status: "Assigned"
-
+      Status: "Assigned",
     });
-
-
-
-    // Update Pickup Status
 
     await pickup.update({
-
-      Status: "Assigned"
-
+      Status: "Assigned",
     });
-
-
-
-    // Update Collector Status
 
     await collector.update({
-
-      Status: "Busy"
-
+      Status: "Busy",
     });
-
-
 
     res.status(201).json({
-
       message: "Collector Assigned Successfully",
-
-      assignment
-
+      assignment,
     });
-
-
 
   } catch (error) {
 
+    console.log("========== ASSIGN ERROR ==========");
 
-    console.error("ASSIGN ERROR:", error);
+    console.error(error);
 
+    console.log("Message:", error.message);
+
+    console.log("SQL:", error.sql);
+
+    console.log("Parameters:", error.parameters);
+
+    if (error.parent?.errors) {
+      console.log("========== SQL SERVER ERRORS ==========");
+
+      error.parent.errors.forEach((err) => {
+        console.log(err.message);
+      });
+    }
 
     res.status(500).json({
-
-      message: error.message
-
+      message: error.message,
     });
-
-
   }
-
 };
-// ==========================
+
+
+
+
+
+// =========================
 // Get All Assignments
 // ==========================
 exports.getAllAssignments = async(req,res)=>{
@@ -641,31 +547,29 @@ message:error.message
 // ==========================
 exports.getCollectorRequests = async(req,res)=>{
 
-
 try{
 
 
 const requests = await PickupAssignment.findAll({
 
 where:{
- CollectorID:req.params.id
+  CollectorID:req.params.id
 },
 
 
 include:[
 
-Collector,
+  Collector,
 
-{
+  {
+    model: PickupRequest,
 
-model:PickupRequest,
+    include:[
+      User,
+      WasteCategory
+    ]
 
-include:[
- User,
- WasteCategory
-]
-
-}
+  }
 
 ]
 
@@ -674,11 +578,26 @@ include:[
 
 
 
+// Check response data
+console.log(
+  "COLLECTOR REQUEST DATA:",
+  JSON.stringify(requests, null, 2)
+);
+
+
+
 res.status(200).json(requests);
 
 
 
 }catch(error){
+
+
+console.log(
+  "GET COLLECTOR REQUEST ERROR:",
+  error
+);
+
 
 res.status(500).json({
 
@@ -691,13 +610,6 @@ message:error.message
 
 
 };
-
-
-
-
-
-
-
 // ==========================
 // Start Pickup
 // ==========================
@@ -707,12 +619,8 @@ exports.startPickup = async (req, res) => {
 
     const { RequestID } = req.params;
 
-
     console.log("Starting Pickup ID:", RequestID);
 
-
-
-    // Check Pickup Request
 
     const pickup = await PickupRequest.findByPk(RequestID);
 
@@ -726,62 +634,44 @@ exports.startPickup = async (req, res) => {
     }
 
 
-
-    // Update Pickup Status
-
+    // Update pickup request status
     await pickup.update({
-
       Status: "Started"
-
     });
 
 
-
-    // Update Assignment Status
-
+    // Update assignment status
     await PickupAssignment.update(
-
       {
         Status: "Started"
       },
-
       {
         where: {
           RequestID: RequestID
         }
       }
-
     );
-
 
 
     res.status(200).json({
 
-      message: "Pickup Started Successfully"
+      message: "Pickup Started Successfully",
+      status: "Started"
 
     });
-
 
 
   } catch (error) {
 
-
     console.log("START PICKUP ERROR:", error);
 
-
     res.status(500).json({
-
       message: error.message
-
     });
-
 
   }
 
 };
-
-
-
 
 
 
@@ -795,40 +685,97 @@ exports.completePickup = async (req, res) => {
 
     const { id } = req.params;
 
+    console.log("Completing Pickup ID:", id);
+
 
     const pickup = await PickupRequest.findByPk(id);
 
 
     if (!pickup) {
+
       return res.status(404).json({
         message: "Pickup Request Not Found"
       });
+
     }
 
 
+    // Find assignment before updating
+    const assignment = await PickupAssignment.findOne({
+      where:{
+        RequestID: id
+      }
+    });
+
+
+    // Update Pickup Request Status
     await pickup.update({
       Status: "Completed"
     });
 
 
+
+    // Update Assignment Status
+    await PickupAssignment.update(
+      {
+        Status: "Completed"
+      },
+      {
+        where:{
+          RequestID: id
+        }
+      }
+    );
+
+
+
+    // Make Collector Available again
+    if(assignment){
+
+      await Collector.update(
+        {
+          Status:"Available"
+        },
+        {
+          where:{
+            CollectorID: assignment.CollectorID
+          }
+        }
+      );
+
+    }
+
+
+
     res.status(200).json({
-      message: "Pickup Completed Successfully",
-      pickup
+
+      message:"Pickup Completed Successfully",
+
+      status:"Completed"
+
     });
+
 
 
   } catch(error) {
 
-    console.error("COMPLETE PICKUP ERROR:", error);
+
+    console.error(
+      "COMPLETE PICKUP ERROR:",
+      error
+    );
+
 
     res.status(500).json({
-      message: error.message
+
+      message:error.message
+
     });
+
 
   }
 
 };
-
 // ==========================
 // Today's Collection
 // ==========================
@@ -883,5 +830,66 @@ message:error.message
 
 }
 
+
+};
+// ==========================
+// Get User Pickup History / Track Status
+// ==========================
+exports.getUserPickups = async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+
+    const pickups = await PickupRequest.findAll({
+
+      where: {
+        UserID: id
+      },
+
+
+      include: [
+
+        {
+          model: WasteCategory,
+          attributes: [
+            "CategoryID",
+            "CategoryName"
+          ]
+        }
+
+      ],
+
+
+      order: [
+        ["RequestID", "DESC"]
+      ]
+
+    });
+
+
+
+    res.status(200).json(pickups);
+
+
+
+  } catch (error) {
+
+
+    console.error(
+      "GET USER PICKUPS ERROR:",
+      error
+    );
+
+
+    res.status(500).json({
+
+      message: error.message
+
+    });
+
+
+  }
 
 };

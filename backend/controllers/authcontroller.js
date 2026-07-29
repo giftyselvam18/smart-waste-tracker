@@ -1,6 +1,11 @@
 const jwt = require("jsonwebtoken");
 const { User, Admin, Collector } = require("../models");
 
+
+// ==========================
+// USER REGISTER
+// ==========================
+
 exports.register = async (req, res) => {
 
   try {
@@ -53,11 +58,20 @@ exports.register = async (req, res) => {
 
 
 
-// LOGIN WITHOUT ROLE
+// ==========================
+// LOGIN
+// ==========================
 
 exports.login = async (req, res) => {
 
+
+  console.log("🔥 LOGIN API HIT");
+  console.log("REQUEST BODY:", req.body);
+
+
+
   try {
+
 
     const {
       username,
@@ -68,70 +82,85 @@ exports.login = async (req, res) => {
     } = req.body;
 
 
+
     let account = null;
     let payload = {};
 
 
 
-    // =====================
+
+    // ==========================
     // USER LOGIN
-    // username + password
-    // =====================
+    // ==========================
 
     if (username) {
 
+
+      console.log("Checking User Login...");
+
+
       account = await User.findOne({
-        where: {
+
+        where:{
           Username: username
         }
+
       });
 
 
-      if (account) {
 
-        if (account.Password !== password) {
+      console.log("USER DATA:", account);
+
+
+
+      if(account){
+
+
+        if(account.Password !== password){
+
 
           return res.status(401).json({
-            message: "Invalid password"
+
+            message:"Invalid password"
+
           });
 
+
         }
+
 
 
         payload = {
 
+          UserID: account.UserID,
           id: account.UserID,
           username: account.Username,
-          type: "user"
+          role:"user"
 
         };
 
+
       }
-
-
-      payload = {
-  UserID: user.UserID,
-  id: user.UserID,
-  role: "user",
-  username: user.Username,
-};
-
 
     }
 
 
 
-    // =====================
-    // COLLECTOR LOGIN
-    // collectorCode + password
-    // =====================
 
-    if (!account && collectorCode) {
+
+    // ==========================
+    // COLLECTOR LOGIN
+    // ==========================
+
+    if(!account && collectorCode){
+
+
+      console.log("Checking Collector Login...");
 
 
       account = await Collector.findOne({
 
-        where: {
+        where:{
           CollectorCode: collectorCode
         }
 
@@ -139,14 +168,18 @@ exports.login = async (req, res) => {
 
 
 
-      if (account) {
+      if(account){
 
 
-        if (account.Password !== password) {
+        if(account.Password !== password){
+
 
           return res.status(401).json({
-            message: "Invalid password"
+
+            message:"Invalid password"
+
           });
+
 
         }
 
@@ -154,31 +187,36 @@ exports.login = async (req, res) => {
 
         payload = {
 
+          CollectorID: account.CollectorID,
           id: account.CollectorID,
           username: account.CollectorCode,
-          type: "collector"
+          role:"collector"
 
         };
 
 
       }
 
+
     }
 
 
 
 
-    // =====================
-    // ADMIN LOGIN
-    // adminUsername + password + securityCode
-    // =====================
 
-    if (!account && adminUsername) {
+    // ==========================
+    // ADMIN LOGIN
+    // ==========================
+
+    if(!account && adminUsername){
+
+
+      console.log("Checking Admin Login...");
 
 
       account = await Admin.findOne({
 
-        where: {
+        where:{
           AdminUsername: adminUsername
         }
 
@@ -186,24 +224,32 @@ exports.login = async (req, res) => {
 
 
 
-      if (account) {
+      if(account){
 
 
-        if (account.Password !== password) {
+        if(account.Password !== password){
+
 
           return res.status(401).json({
-            message: "Invalid password"
+
+            message:"Invalid password"
+
           });
+
 
         }
 
 
 
-        if (account.SecurityCode !== securityCode) {
+        if(account.SecurityCode !== securityCode){
+
 
           return res.status(401).json({
-            message: "Invalid security code"
+
+            message:"Invalid security code"
+
           });
+
 
         }
 
@@ -211,28 +257,40 @@ exports.login = async (req, res) => {
 
         payload = {
 
+          AdminID: account.AdminID,
           id: account.AdminID,
           username: account.AdminUsername,
-          type: "admin"
+          role:"admin"
 
         };
 
 
       }
 
+
     }
 
 
 
-    if (!account) {
+
+
+    // ==========================
+    // ACCOUNT NOT FOUND
+    // ==========================
+
+    if(!account){
+
 
       return res.status(404).json({
 
-        message: "Account not found"
+        message:"Account not found"
 
       });
 
+
     }
+
+
 
 
 
@@ -243,32 +301,35 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET,
 
       {
-        expiresIn: process.env.JWT_EXPIRES_IN
+        expiresIn:"1d"
       }
 
     );
 
 
 
-    res.status(200).json({
 
-      message: "Login successful",
+
+    return res.status(200).json({
+
+      message:"Login successful",
 
       token,
 
-      user: payload
+      user:payload
 
     });
+
 
 
 
   } catch(error) {
 
 
-    console.error("Login Error:", error);
+    console.error("🔥 LOGIN ERROR:", error);
 
 
-    res.status(500).json({
+    return res.status(500).json({
 
       message:error.message
 
@@ -276,5 +337,6 @@ exports.login = async (req, res) => {
 
 
   }
+
 
 };

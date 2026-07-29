@@ -4,15 +4,19 @@ import DashboardTopBar from "../../components/TopBar/DashboardTopBar";
 import { FaRobot } from "react-icons/fa";
 
 function UserDashboard() {
+
   return (
     <>
+
       <DashboardTopBar role="User" />
 
-      <div className="dashboard">
+<div className="dashboard">
+
 
         <aside className="sidebar">
 
           <h2>♻ Smart Waste</h2>
+
 
           <ul>
 
@@ -32,13 +36,8 @@ function UserDashboard() {
 
             <li>
               <Link to="/UserDashboard/ai-classifier">
-
                 <FaRobot />
-
-                <span>
-                  AI Waste Classifier
-                </span>
-
+                AI Waste Classifier
               </Link>
             </li>
 
@@ -48,21 +47,6 @@ function UserDashboard() {
                 📍 Track Status
               </Link>
             </li>
-
-
-            <li>
-              <Link to="/UserDashboard/history">
-                📜 Collection History
-              </Link>
-            </li>
-
-
-            <li>
-              <Link to="/UserDashboard/notifications">
-                🔔 Notifications
-              </Link>
-            </li>
-
 
             <li>
               <Link to="/UserDashboard/profile">
@@ -80,20 +64,20 @@ function UserDashboard() {
 
           </ul>
 
+
         </aside>
 
 
 
         <main className="main-content">
 
-          {/* Child pages render here */}
           <Outlet />
-
 
         </main>
 
 
       </div>
+
 
     </>
   );

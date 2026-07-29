@@ -45,13 +45,11 @@ const Collector = sequelize.define(
       allowNull: true,
       field: "Area",
     },
-
-    Status:{
-  type: DataTypes.STRING,
-  allowNull:false,
-  defaultValue:"Available",
-  field:"Status"
-}
+    Status: {
+      type: DataTypes.STRING,
+      defaultValue: "Available"
+    }
+    
   },
   {
     tableName: "Collectors",

@@ -1,90 +1,109 @@
+import { useEffect, useState } from "react";
 import FeatureTopBar from "../../components/TopBar/FeatureTopBar";
 import "./CollectorProfile.css";
 
 
 function CollectorProfile(){
 
-  return(
-    <>
-
-    <FeatureTopBar dashboardPath="/CollectorDashboard" />
+const [collector,setCollector] = useState(null);
 
 
-    <div className="profile-container">
+useEffect(()=>{
+
+const data = JSON.parse(
+localStorage.getItem("collector")
+);
+
+setCollector(data);
 
 
-      <h1>👤 Collector Profile</h1>
-
-
-      <div className="profile-card">
-
-
-        <div className="profile-item">
-
-          <h3>Name</h3>
-
-          <p>Collector Name</p>
-
-        </div>
+},[]);
 
 
 
-        <div className="profile-item">
+return(
 
-          <h3>📍 Area</h3>
+<>
 
-          <p>Chennai</p>
-
-        </div>
+<FeatureTopBar dashboardPath="/CollectorDashboard"/>
 
 
+<div className="profile-container">
 
-        <div className="profile-item">
 
-          <h3>Status</h3>
-
-          <p className="active-status">
-            🟢 Active
-          </p>
-
-        </div>
+<h1>
+👤 Collector Profile
+</h1>
 
 
 
-      </div>
+{
+collector ?
+
+<div className="profile-card">
 
 
-
-      <div className="stats-card">
-
-
-        <div>
-          <h3>📦 Total Pickups</h3>
-          <h2>25</h2>
-        </div>
+<h2>
+🚛 {collector.CollectorName}
+</h2>
 
 
-        <div>
-          <h3>✅ Completed</h3>
-          <h2>20</h2>
-        </div>
+<div className="profile-details">
 
 
-        <div>
-          <h3>⏳ Pending</h3>
-          <h2>5</h2>
-        </div>
+<p>
+<b>Collector Code :</b>
+{collector.CollectorCode}
+</p>
 
 
-      </div>
+<p>
+<b>Phone :</b>
+{collector.Phone}
+</p>
 
 
-    </div>
+<p>
+<b>Vehicle Number :</b>
+{collector.VehicleNumber}
+</p>
 
 
-    </>
+<p>
+<b>Area :</b>
+{collector.Area}
+</p>
 
-  );
+
+<p>
+<b>Status :</b>
+{collector.Status}
+</p>
+
+
+</div>
+
+
+</div>
+
+
+:
+
+<h3>
+No Collector Data Found
+</h3>
+
+
+}
+
+
+</div>
+
+
+</>
+
+);
+
 
 }
 

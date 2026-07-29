@@ -15,9 +15,13 @@ function PickupRequests() {
   const fetchRequests = async () => {
     try {
       const response = await API.get("/pickups/request");
+
+      console.log("========== PICKUP RESPONSE ==========");
+      console.log(response.data);
+
       setRequests(response.data);
     } catch (error) {
-      console.error(error);
+      console.error("Fetch Error:", error);
       alert("Failed to fetch pickup requests");
     }
   };
@@ -45,7 +49,6 @@ function PickupRequests() {
       });
 
       alert("Request Accepted");
-
       navigate(`/admin/assign/${id}`);
     } catch (error) {
       console.log(error);
@@ -78,26 +81,44 @@ function PickupRequests() {
 
           <tbody>
             {requests.length > 0 ? (
-              requests.map((request) => (
-                <tr key={request.RequestID}>
-                  <td>{request.RequestID}</td>
+              requests.map((request, index) => (
+                <tr key={index}>
+                  <td>{request.RequestID || request.requestId}</td>
 
                   <td>{request.User?.FullName || "-"}</td>
 
-                  <td>{request.WasteCategory?.CategoryName || "-"}</td>
+                  <td>
+                    {request.WasteCategory?.CategoryName ||
+                      request.wasteType ||
+                      "-"}
+                  </td>
 
-                  <td>{request.Weight || "-"} Kg</td>
-
-                  <td>{request.PickupAddress}</td>
-
-                  <td>{request.PickupDate}</td>
-
-                  <td>{request.PickupTime}</td>
+                  <td>{request.Weight || request.weight || "-"} Kg</td>
 
                   <td>
-                    {request.WasteImage ? (
+                    {request.PickupAddress ||
+                      request.pickupAddress ||
+                      "-"}
+                  </td>
+
+                  <td>
+                    {request.PickupDate ||
+                      request.pickupDate ||
+                      "-"}
+                  </td>
+
+                  <td>
+                    {request.PickupTime ||
+                      request.pickupTime ||
+                      "-"}
+                  </td>
+
+                  <td>
+                    {request.WasteImage || request.wasteImage ? (
                       <img
-                        src={`http://localhost:5000/uploads/${request.WasteImage}`}
+                        src={`http://localhost:5000/uploads/${
+                          request.WasteImage || request.wasteImage
+                        }`}
                         alt="Waste"
                         width="80"
                         height="80"
@@ -107,47 +128,37 @@ function PickupRequests() {
                     )}
                   </td>
 
-                  <td>{request.Status}</td>
+                  <td>{request.Status || "Pending"}</td>
 
                   <td>
                     <button
                       className="accept-btn"
                       onClick={() =>
-                        acceptRequest(request.RequestID)
-                      }
-                      disabled={
-                        request.Status === "Accepted" ||
-                        request.Status === "Assigned"
+                        acceptRequest(
+                          request.RequestID || request.requestId
+                        )
                       }
                     >
-                      {request.Status === "Accepted" ||
-                      request.Status === "Assigned"
-                        ? "Accepted"
-                        : "Accept"}
+                      Accept
                     </button>
 
                     <button
                       className="reject-btn"
                       onClick={() =>
                         updateStatus(
-                          request.RequestID,
+                          request.RequestID || request.requestId,
                           "Rejected"
                         )
                       }
-                      disabled={request.Status === "Rejected"}
                     >
-                      {request.Status === "Rejected"
-                        ? "Rejected"
-                        : "Reject"}
+                      Reject
                     </button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="10">
-                  No Pickup Requests Found
-                </td>
+                <td colSpan="10">No Pickup Requests Found</td>
               </tr>
             )}
           </tbody>

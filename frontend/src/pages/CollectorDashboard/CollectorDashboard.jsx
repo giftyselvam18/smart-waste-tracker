@@ -14,14 +14,10 @@ function CollectorDashboard() {
 
 
   const [requests, setRequests] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
 
-
-  // Temporary Collector ID
   const collectorId = 2;
-
 
 
 
@@ -33,10 +29,12 @@ function CollectorDashboard() {
 
     try {
 
-
       const response = await API.get(
         `/pickups/collector/${collectorId}`
       );
+
+
+      console.log("Collector Data:", response.data);
 
 
       setRequests(response.data);
@@ -44,12 +42,10 @@ function CollectorDashboard() {
 
     } catch(error) {
 
-
       console.log(
         "Error fetching collector requests",
         error
       );
-
 
     } finally {
 
@@ -62,7 +58,7 @@ function CollectorDashboard() {
 
 
 
-  useEffect(() => {
+  useEffect(()=>{
 
     fetchAssignedRequests();
 
@@ -73,46 +69,40 @@ function CollectorDashboard() {
 
 
 
-
   // ==========================
   // Start Pickup
   // ==========================
+   const startPickup = async(id)=>{
 
-  const startPickup = async(id)=>{
+  try{
 
-
-    try{
-
-
-      const response = await API.put(
-        `/pickups/start/${id}`
-      );
+    const response = await API.put(
+      `/pickups/start/${id}`
+    );
 
 
-      alert(response.data.message);
+    localStorage.setItem(
+      "activePickupId",
+      id
+    );
 
 
-      fetchAssignedRequests();
+    alert(response.data.message);
 
 
-
-    }catch(error){
-
-
-      console.log(error);
-
-      alert("Start pickup failed");
+    navigate("/collector/map");
 
 
-    }
+  }catch(error){
 
+    console.log(error);
 
-  };
+    alert("Start pickup failed");
 
+  }
 
-
-
-
+};
+  
 
 
 
@@ -122,9 +112,7 @@ function CollectorDashboard() {
 
   const completePickup = async(id)=>{
 
-
     try{
-
 
       const response = await API.put(
         `/pickups/complete/${id}`
@@ -137,17 +125,13 @@ function CollectorDashboard() {
       fetchAssignedRequests();
 
 
-
     }catch(error){
-
 
       console.log(error);
 
       alert("Pickup completion failed");
 
-
     }
-
 
   };
 
@@ -156,509 +140,371 @@ function CollectorDashboard() {
 
 
 
-
   return (
 
-    <>
+<>
+    
+<DashboardTopBar role="Collector" />
 
-    <DashboardTopBar role="Collector" />
 
+<div className="collector-dashboard">
 
 
-    <div className="collector-dashboard">
 
+{/* Sidebar */}
 
+<aside className="collector-sidebar">
 
 
+<h2>
+♻ Smart Waste
+</h2>
 
-      {/* Sidebar */}
 
-      <aside className="collector-sidebar">
+<ul>
 
+<li onClick={()=>navigate("/CollectorDashboard")}>
+🏠 Dashboard
+</li>
 
-        <h2>
-          ♻ Smart Waste
-        </h2>
 
+<li onClick={()=>navigate("/collector/pickups")}>
+📋 Assigned Pickups
+</li>
 
 
-        <ul>
 
 
-          <li
-          onClick={()=>navigate("/CollectorDashboard")}
-          >
-            🏠 Dashboard
-          </li>
+<li onClick={()=>navigate("/collector/map")}>
+📍 Route Map
+</li>
 
 
 
-          <li
-          onClick={()=>navigate("/collector/pickups")}
-          >
-            📋 Assigned Pickups
-          </li>
+<li onClick={()=>navigate("/collector/profile")}>
+👤 Profile
+</li>
 
 
+<li onClick={()=>navigate("/login/collector")}>
+🚪 Logout
+</li>
 
-          <li
-          onClick={()=>navigate("/collector/today")}
-          >
-            🚛 Today's Collection
-          </li>
 
+</ul>
 
 
-          <li
-          onClick={()=>navigate("/collector/map")}
-          >
-            📍 Route Map
-          </li>
+</aside>
 
 
 
-          <li
-          onClick={()=>navigate("/collector/history")}
-          >
-            📜 Collection History
-          </li>
 
 
+{/* Main */}
 
-          <li
-          onClick={()=>navigate("/collector/profile")}
-          >
-            👤 Profile
-          </li>
+<main className="collector-main">
 
 
+<h1>
+Waste Collector Dashboard
+</h1>
 
-          <li
-          onClick={()=>navigate("/login/collector")}
-          >
-            🚪 Logout
-          </li>
 
 
-        </ul>
 
 
-      </aside>
+<div className="collector-cards">
 
 
+<div className="collector-card">
 
+<h2>
+{requests.length}
+</h2>
 
+<p>
+Assigned Pickups
+</p>
 
+</div>
 
 
 
-      {/* Main Content */}
 
 
-      <main className="collector-main">
+<div className="collector-card">
 
+<h2>
 
-        <h1>
-          Waste Collector Dashboard
-        </h1>
+{
+requests.filter(
+item=>item.Status==="Assigned"
+).length
+}
 
+</h2>
 
+<p>
+Pending
+</p>
 
+</div>
 
 
-        {/* Cards */}
+<div className="collector-card">
 
-        <div className="collector-cards">
+<h2>
 
+{
+requests.filter(
+item=>item.Status==="Completed"
+).length
+}
 
+</h2>
 
-          <div className="collector-card">
+<p>
+Completed
+</p>
 
-            <h2>
-              {requests.length}
-            </h2>
+</div>
 
-            <p>
-              Assigned Pickups
-            </p>
 
-          </div>
+</div>
 
 
+<div className="pickup-table">
 
 
+<h2>
+Assigned Pickup Requests
+</h2>
 
 
-          <div className="collector-card">
 
-            <h2>
+{
+loading ?
 
-              {
-                requests.filter(
-                  item =>
-                  item.Status === "Assigned"
-                ).length
-              }
+<h3>
+Loading...
+</h3>
 
-            </h2>
 
+:
 
-            <p>
-              Pending
-            </p>
+<table>
 
 
-          </div>
+<thead>
 
+<tr>
 
+<th>User</th>
+<th>Location</th>
+<th>Waste Type</th>
+<th>Weight</th>
+<th>Date</th>
+<th>Status</th>
+<th>Action</th>
 
+</tr>
 
+</thead>
 
 
-          <div className="collector-card">
 
 
-            <h2>
+<tbody>
 
-            {
-              requests.filter(
-                item =>
-                item.Status === "Completed"
-              ).length
-            }
 
-            </h2>
+{
 
+requests.length > 0 ?
 
-            <p>
-              Completed
-            </p>
+requests.map((item)=>(
 
 
-          </div>
+<tr key={item.AssignmentID}>
 
 
+<td>
 
-        </div>
+{
+item.PickupRequest?.User?.FullName ||
+"User"
+}
 
+</td>
 
 
 
+<td>
 
+{
+ item.PickupRequest?.pickupAddress ||
+ "-"
+}
 
+</td>
 
 
 
-        {/* Pickup Table */}
 
+<td>
 
-        <div className="pickup-table">
+{
+item.PickupRequest?.WasteCategory?.CategoryName ||
+item.PickupRequest?.WasteType ||
+"Waste"
+}
 
+</td>
 
-        <h2>
-          Assigned Pickup Requests
-        </h2>
 
 
 
+<td>
 
+{
+ item.PickupRequest?.weight ||
+ "-"
+}
 
-        {
+Kg
 
-        loading ?
 
-        (
 
-          <h3>
-            Loading...
-          </h3>
 
-        )
+</td>
 
-        :
 
-        (
 
 
-        <table>
+<td>
 
+{
+ item.PickupRequest?.pickupDate ||
+ "-"
+}
+</td>
 
-          <thead>
 
-            <tr>
 
-              <th>
-                User
-              </th>
 
+<td>
 
-              <th>
-                Location
-              </th>
+{
+item.Status
+}
 
+</td>
 
-              <th>
-                Waste Type
-              </th>
 
 
-              <th>
-                Weight
-              </th>
 
 
-              <th>
-                Date
-              </th>
+<td>
 
 
-              <th>
-                Status
-              </th>
+{
 
+item.Status==="Assigned" &&
 
-              <th>
-                Action
-              </th>
+<button
+onClick={()=>startPickup(item.RequestID)}
+>
 
+🚚 Start
 
-            </tr>
+</button>
 
+}
 
-          </thead>
 
 
 
+{
 
+item.Status==="Started" &&
 
+<button
+onClick={()=>completePickup(item.RequestID)}
+>
 
+✅ Complete
 
-          <tbody>
+</button>
 
+}
 
 
-          {
 
 
-          requests.length > 0 ?
 
+{
 
-          requests.map((item)=>(
+item.Status==="Completed" &&
 
+<span>
+✔ Done
+</span>
 
-          <tr key={item.AssignmentID}>
+}
 
 
-            <td>
+</td>
 
-            {
-              item.PickupRequest?.User?.FullName ||
-              "User"
-            }
 
-            </td>
 
 
+</tr>
 
 
+))
 
-            <td>
 
-            {
-              item.PickupRequest?.PickupAddress ||
-              "-"
-            }
+:
 
-            </td>
+<tr>
 
+<td colSpan="7">
 
+No Assigned Pickup Requests
 
+</td>
 
-
-            <td>
-
-            {
-              item.PickupRequest?.WasteCategory?.CategoryName ||
-              "Waste"
-            }
-
-            </td>
-
-
-
-
-
-            <td>
-
-            {
-              item.PickupRequest?.Weight ||
-              "-"
-            }
-
-            Kg
-
-            </td>
-
-
-
-
-
-            <td>
-
-            {
-              item.PickupRequest?.PickupDate ||
-              "-"
-            }
-
-            </td>
-
-
-
-
-
-
-            <td>
-
-            {
-              item.Status
-            }
-
-            </td>
-
-
-
-
-
-
-
-            <td>
-
-
-
-            {
-
-            item.Status === "Assigned" &&
-
-            <button
-            onClick={()=>
-              startPickup(
-                item.PickupRequest.RequestID
-              )
-            }
-            >
-
-              🚚 Start
-
-            </button>
-
-
-            }
-
-
-
-
-            {
-
-            item.Status === "On the Way" &&
-
-            <button
-            onClick={()=>
-              completePickup(
-                item.PickupRequest.RequestID
-              )
-            }
-            >
-
-              ✅ Complete
-
-            </button>
-
-
-            }
-
-
-
-
-
-            {
-
-            item.Status === "Completed" &&
-
-            <span>
-              ✔ Done
-            </span>
-
-            }
-
-
-
-            </td>
-
-
-
-
-          </tr>
-
-
-          ))
-
-
-
-          :
-
-
-          <tr>
-
-            <td colSpan="7">
-
-              No Assigned Pickup Requests
-
-            </td>
-
-
-          </tr>
-
-
-          }
-
-
-          </tbody>
-
-
-
-        </table>
-
-
-        )
-
-
-        }
-
-
-
-        </div>
-
-
-
-
-
-      </main>
-
-
-
-
-
-    </div>
-
-
-
-    </>
-
-  );
+</tr>
 
 
 }
 
+
+
+</tbody>
+
+
+</table>
+
+
+}
+
+
+</div>
+
+
+
+</main>
+
+
+
+</div>
+
+
+</>
+
+  );
+
+}
 
 
 export default CollectorDashboard;

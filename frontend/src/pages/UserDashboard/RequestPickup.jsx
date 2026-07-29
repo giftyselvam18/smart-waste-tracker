@@ -2,7 +2,6 @@ import "./RequestPickup.css";
 
 import { useState } from "react";
 import { submitPickupRequest } from "../../services/pickupService";
-import FeatureTopBar from "../../components/TopBar/FeatureTopBar";
 
 import {
   FaRecycle,
@@ -28,7 +27,6 @@ function RequestPickup() {
     pickupDate: "",
     pickupTime: "",
     pickupAddress: "",
-    notes: "",
     wasteImage: null,
 
   });
@@ -40,7 +38,6 @@ function RequestPickup() {
     setFormData({
 
       ...formData,
-
       [e.target.name]: e.target.value,
 
     });
@@ -54,12 +51,12 @@ function RequestPickup() {
     setFormData({
 
       ...formData,
-
       wasteImage: e.target.files[0],
 
     });
 
   };
+
 
 
 
@@ -76,13 +73,12 @@ function RequestPickup() {
       );
 
 
-      console.log("Logged User:", user);
 
+      if (!user || (!user.UserID && !user.id)) {
 
-
-      if (!user || (!user.id && !user.UserID)) {
-
-        alert("User not logged in. Please login again.");
+        alert(
+          "User not logged in. Please login again."
+        );
 
         return;
 
@@ -93,41 +89,55 @@ function RequestPickup() {
       const requestData = {
 
 
-        UserID: user.id || user.UserID,
+        UserID:
+          user.UserID || user.id,
 
 
-        wasteType: formData.wasteType,
+        wasteType:
+          formData.wasteType,
 
-        weight: formData.weight,
 
-        pickupDate: formData.pickupDate,
+        weight:
+          formData.weight,
 
-        pickupTime: formData.pickupTime,
 
-        pickupAddress: formData.pickupAddress,
+        pickupDate:
+          formData.pickupDate,
 
-        notes: formData.notes,
 
+        pickupTime:
+          formData.pickupTime,
+
+
+        pickupAddress:
+          formData.pickupAddress,
+
+
+        wasteImage:
+          formData.wasteImage
+          ? formData.wasteImage.name
+          : null,
 
       };
 
 
 
       console.log(
-        "Sending Pickup Data:",
+        "Sending Data:",
         requestData
       );
 
 
 
-      const response = await submitPickupRequest(
-        requestData
-      );
+      const response =
+        await submitPickupRequest(
+          requestData
+        );
 
 
 
       alert(
-        response.message ||
+        response.data?.message ||
         "Pickup Request Submitted Successfully!"
       );
 
@@ -135,92 +145,200 @@ function RequestPickup() {
 
       setFormData({
 
-        wasteType: "",
-        weight: "",
-        pickupDate: "",
-        pickupTime: "",
-        pickupAddress: "",
-        notes: "",
-        wasteImage: null,
+        wasteType:"",
+        weight:"",
+        pickupDate:"",
+        pickupTime:"",
+        pickupAddress:"",
+        wasteImage:null,
 
       });
 
 
 
-    } catch(error) {
+    }
+    catch(error){
 
 
       console.log(
         "Pickup Error:",
-        error.response?.data || error.message
+        error
       );
 
 
       alert(
-        error.response?.data?.message ||
         "Failed to submit pickup request"
       );
 
 
     }
 
+
   };
+
 
 
 
   return (
 
-    <>
+    <div className="pickup-page">
 
 
-      <FeatureTopBar dashboardPath="/UserDashboard" />
+      <img
 
+        src={pickupImg}
 
-      <div className="pickup-page">
+        alt="pickup"
 
+        className="background-image"
 
-        <img
-
-          src={pickupImg}
-
-          alt="Pickup Background"
-
-          className="background-image"
-
-        />
+      />
 
 
 
-        <div className="overlay">
+      <div className="overlay">
 
 
-          <div className="pickup-card">
-
-
-            <div className="pickup-form-section">
-
-
-              <div className="pickup-header">
-
-
-                <div className="pickup-icon">
-
-                  <FaTruck />
-
-                </div>
+        <div className="pickup-card">
 
 
 
-                <div>
-
-                  <h2>
-                    Request Waste Pickup
-                  </h2>
+          <div className="pickup-header">
 
 
-                  <p>
-                    Schedule your waste pickup quickly and keep the city clean.
-                  </p>
+            <div className="pickup-icon">
+
+              <FaTruck/>
+
+            </div>
+
+
+            <div>
+
+              <h2>
+                Request Waste Pickup
+              </h2>
+
+
+              <p>
+                Schedule your waste pickup quickly and keep the city clean.
+              </p>
+
+            </div>
+
+
+          </div>
+
+
+
+
+
+          <form onSubmit={handleSubmit}>
+
+
+            <div className="form-group">
+
+
+              <label>
+                Waste Type
+              </label>
+
+
+              <div className="input-box">
+
+
+                <FaRecycle/>
+
+
+                <select
+
+                  name="wasteType"
+
+                  value={formData.wasteType}
+
+                  onChange={handleChange}
+
+                  required
+
+                >
+
+                  <option value="">
+                    Select Waste Type
+                  </option>
+
+
+                  <option value="Plastic">
+                    Plastic
+                  </option>
+
+
+                  <option value="Paper">
+                    Paper
+                  </option>
+
+
+                  <option value="Metal">
+                    Metal
+                  </option>
+
+
+                  <option value="Glass">
+                    Glass
+                  </option>
+
+
+                  <option value="Organic">
+                    Organic
+                  </option>
+
+
+                  <option value="E-Waste">
+                    E-Waste
+                  </option>
+
+
+                </select>
+
+
+              </div>
+
+
+            </div>
+
+
+
+
+
+            <div className="row">
+
+
+              <div className="form-group">
+
+
+                <label>
+                  Weight (kg)
+                </label>
+
+
+                <div className="input-box">
+
+
+                  <FaWeightHanging/>
+
+
+                  <input
+
+                    type="number"
+
+                    name="weight"
+
+                    value={formData.weight}
+
+                    onChange={handleChange}
+
+                    required
+
+                  />
 
 
                 </div>
@@ -231,298 +349,185 @@ function RequestPickup() {
 
 
 
-              <form onSubmit={handleSubmit}>
+
+              <div className="form-group">
 
 
-                <div className="form-group">
+                <label>
+                  Pickup Date
+                </label>
 
 
-                  <label>
-                    Waste Type
-                  </label>
+                <div className="input-box">
 
 
-                  <div className="input-box">
+                  <FaCalendarAlt/>
 
 
-                    <FaRecycle />
+                  <input
 
+                    type="date"
 
-                    <select
+                    name="pickupDate"
 
-                      name="wasteType"
+                    value={formData.pickupDate}
 
-                      value={formData.wasteType}
+                    onChange={handleChange}
 
-                      onChange={handleChange}
+                    required
 
-                      required
-
-                    >
-
-
-                      <option value="">
-                        Select Waste Type
-                      </option>
-
-                      <option value="Plastic">
-                        Plastic
-                      </option>
-
-                      <option value="Paper">
-                        Paper
-                      </option>
-
-                      <option value="Metal">
-                        Metal
-                      </option>
-
-                      <option value="Glass">
-                        Glass
-                      </option>
-
-                      <option value="Organic">
-                        Organic
-                      </option>
-
-                      <option value="E-Waste">
-                        E-Waste
-                      </option>
-
-
-                    </select>
-
-
-                  </div>
+                  />
 
 
                 </div>
 
 
-
-
-                <div className="row">
-
-
-                  <div className="form-group">
-
-
-                    <label>
-                      Weight (kg)
-                    </label>
-
-
-                    <div className="input-box">
-
-
-                      <FaWeightHanging />
-
-
-                      <input
-
-                        type="number"
-
-                        name="weight"
-
-                        value={formData.weight}
-
-                        onChange={handleChange}
-
-                        required
-
-                      />
-
-
-                    </div>
-
-
-                  </div>
-
-
-
-
-
-                  <div className="form-group">
-
-
-                    <label>
-                      Pickup Date
-                    </label>
-
-
-                    <div className="input-box">
-
-
-                      <FaCalendarAlt />
-
-
-                      <input
-
-                        type="date"
-
-                        name="pickupDate"
-
-                        value={formData.pickupDate}
-
-                        onChange={handleChange}
-
-                        required
-
-                      />
-
-
-                    </div>
-
-
-                  </div>
-
-
-                </div>
-
-
-
-
-
-                <div className="row">
-
-
-                  <div className="form-group">
-
-
-                    <label>
-                      Pickup Time
-                    </label>
-
-
-                    <div className="input-box">
-
-
-                      <FaClock />
-
-
-                      <input
-
-                        type="time"
-
-                        name="pickupTime"
-
-                        value={formData.pickupTime}
-
-                        onChange={handleChange}
-
-                        required
-
-                      />
-
-
-                    </div>
-
-
-                  </div>
-
-
-
-
-
-                  <div className="form-group">
-
-
-                    <label>
-                      Pickup Address
-                    </label>
-
-
-                    <div className="input-box">
-
-
-                      <FaMapMarkerAlt />
-
-
-                      <input
-
-                        type="text"
-
-                        name="pickupAddress"
-
-                        value={formData.pickupAddress}
-
-                        onChange={handleChange}
-
-                        required
-
-                      />
-
-
-                    </div>
-
-
-                  </div>
-
-
-                </div>
-
-
-
-
-
-                <div className="form-group">
-
-
-                  <label>
-                    Upload Waste Image (Optional)
-                  </label>
-
-
-                  <div className="upload-box">
-
-
-                    <FaUpload />
-
-
-                    <input
-
-                      type="file"
-
-                      accept="image/*"
-
-                      onChange={handleFileChange}
-
-                    />
-
-
-                  </div>
-
-
-                </div>
-
-
-
-
-
-                <button
-
-                  type="submit"
-
-                  className="submit-btn"
-
-                >
-
-
-                  <FaPaperPlane />
-
-                  Submit Pickup Request
-
-
-                </button>
-
-
-              </form>
+              </div>
 
 
             </div>
 
 
-          </div>
+
+
+
+
+            <div className="row">
+
+
+              <div className="form-group">
+
+
+                <label>
+                  Pickup Time
+                </label>
+
+
+                <div className="input-box">
+
+
+                  <FaClock/>
+
+
+                  <input
+
+                    type="time"
+
+                    name="pickupTime"
+
+                    value={formData.pickupTime}
+
+                    onChange={handleChange}
+
+                    required
+
+                  />
+
+
+                </div>
+
+
+              </div>
+
+
+
+
+
+              <div className="form-group">
+
+
+                <label>
+                  Pickup Address
+                </label>
+
+
+                <div className="input-box">
+
+
+                  <FaMapMarkerAlt/>
+
+
+                  <input
+
+                    type="text"
+
+                    name="pickupAddress"
+
+                    value={formData.pickupAddress}
+
+                    onChange={handleChange}
+
+                    required
+
+                  />
+
+
+                </div>
+
+
+              </div>
+
+
+            </div>
+
+
+
+
+
+
+            <div className="form-group">
+
+
+              <label>
+                Upload Waste Image (Optional)
+              </label>
+
+
+              <div className="upload-box">
+
+
+                <FaUpload/>
+
+
+                <input
+
+                  type="file"
+
+                  accept="image/*"
+
+                  onChange={handleFileChange}
+
+                />
+
+
+              </div>
+
+
+            </div>
+
+
+
+
+
+            <button
+
+              type="submit"
+
+              className="submit-btn"
+
+            >
+
+              <FaPaperPlane/>
+
+              Submit Pickup Request
+
+            </button>
+
+
+
+
+          </form>
+
 
 
         </div>
@@ -531,9 +536,11 @@ function RequestPickup() {
       </div>
 
 
-    </>
+    </div>
+
 
   );
+
 
 }
 
